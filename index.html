@@ -1,0 +1,1752 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta name="yul-content-update" content="Merged definitions from file update.docx; 2026-10-13">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#060912">
+<title>Thần Số Học — Tra cứu chỉ số &amp; kết hợp</title>
+<meta name="description" content="Tra cứu Thần Số Học theo họ tên khai sinh và ngày sinh: Đường Đời, Sứ Mệnh, Linh Hồn, Nhân Cách, Ngày Sinh, Thái Độ, Trưởng Thành, Năm Cá Nhân và 16 cặp chỉ số kết hợp.">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  if (window.tailwind) tailwind.config = {
+    theme: { extend: { fontFamily: {
+      sans: ['"Be Vietnam Pro"', 'ui-sans-serif', 'system-ui', 'Segoe UI', 'Roboto', 'sans-serif'],
+      display: ['"Cormorant Garamond"', 'Georgia', 'serif'] } } }
+  };
+</script>
+<style>
+:root{color-scheme:dark}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:#060912;min-height:100vh;font-family:Arial,Helvetica,'Segoe UI',sans-serif}
+.font-display{font-family:Georgia,'Times New Roman',serif}
+
+/* Bản giao diện này ẩn các nút/khu vực xuất JSON của kết quả; chức năng hồ sơ và PDF vẫn giữ nguyên. */
+#btnDlAll,#btnDl1,#btnDl2,#t-json,#v-json{display:none!important}
+
+/* ---------- ambient background ---------- */
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+   radial-gradient(60rem 40rem at 12% -12%,rgba(16,185,129,.17),transparent 60%),
+   radial-gradient(55rem 38rem at 100% 0%,rgba(99,102,241,.2),transparent 55%),
+   radial-gradient(50rem 36rem at 50% 115%,rgba(30,41,59,.95),transparent 60%)}
+.stars{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.8;
+  background-image:
+   radial-gradient(1px 1px at 20px 30px,rgba(255,255,255,.6),transparent),
+   radial-gradient(1px 1px at 120px 80px,rgba(255,255,255,.35),transparent),
+   radial-gradient(1.5px 1.5px at 200px 150px,rgba(167,243,208,.45),transparent),
+   radial-gradient(1px 1px at 60px 190px,rgba(199,210,254,.45),transparent),
+   radial-gradient(1px 1px at 170px 20px,rgba(255,255,255,.3),transparent);
+  background-size:240px 240px;animation:twinkle 7s ease-in-out infinite alternate}
+@keyframes twinkle{from{opacity:.45}to{opacity:.9}}
+
+/* ---------- surfaces ---------- */
+.glass{background:linear-gradient(180deg,rgba(255,255,255,.065),rgba(255,255,255,.025));border:1px solid rgba(255,255,255,.09);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:1.25rem;box-shadow:0 20px 60px -30px rgba(0,0,0,.7)}
+.field{width:100%;background:rgba(2,6,23,.55);border:1px solid rgba(148,163,184,.22);border-radius:.85rem;padding:.8rem 1rem;color:#f1f5f9;font-size:1rem;transition:border-color .2s,box-shadow .2s,background .2s}
+.field::placeholder{color:#64748b}
+.field:hover{border-color:rgba(148,163,184,.4)}
+.field:focus{outline:none;border-color:#34d399;box-shadow:0 0 0 4px rgba(52,211,153,.14);background:rgba(2,6,23,.75)}
+.lbl{display:block;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#94a3b8;margin-bottom:.45rem;font-weight:600}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.65rem 1rem;border-radius:.85rem;font-size:.9rem;font-weight:500;color:#e2e8f0;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);transition:background .2s,border-color .2s,transform .15s,box-shadow .2s;cursor:pointer;white-space:nowrap}
+.btn:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.22)}
+.btn:active{transform:scale(.97)}
+.btn:focus-visible,.tab:focus-visible,.idx-more:focus-visible,.seg button:focus-visible{outline:2px solid #6ee7b7;outline-offset:2px}
+.btn-primary{color:#fff;font-weight:600;font-size:1rem;padding:.85rem 1.6rem;border:0;background:linear-gradient(135deg,#059669 0%,#0d9488 40%,#4f46e5 100%);box-shadow:0 10px 30px -10px rgba(16,185,129,.6),inset 0 1px 0 rgba(255,255,255,.25)}
+.btn-primary:hover{background:linear-gradient(135deg,#10b981 0%,#14b8a6 40%,#6366f1 100%);box-shadow:0 14px 40px -10px rgba(99,102,241,.65),inset 0 1px 0 rgba(255,255,255,.3);border:0}
+.btn-sm{padding:.5rem .8rem;font-size:.82rem;border-radius:.7rem}
+.btn-danger:hover{background:rgba(244,63,94,.15);border-color:rgba(244,63,94,.5);color:#fecdd3}
+.ico{width:1.1em;height:1.1em;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- tabs / segmented ---------- */
+.tabs{display:flex;gap:.35rem;padding:.35rem;border-radius:1rem;background:rgba(2,6,23,.7);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.tab{flex:1;padding:.65rem .5rem;border-radius:.75rem;font-size:.88rem;font-weight:500;color:#94a3b8;transition:all .25s;cursor:pointer;text-align:center}
+.tab:hover{color:#e2e8f0}
+.tab[aria-selected="true"]{color:#ecfdf5;background:linear-gradient(135deg,rgba(16,185,129,.28),rgba(99,102,241,.28));box-shadow:inset 0 0 0 1px rgba(110,231,183,.3)}
+.seg{display:inline-flex;padding:.25rem;border-radius:.8rem;background:rgba(2,6,23,.6);border:1px solid rgba(255,255,255,.08)}
+.seg button{padding:.4rem .8rem;border-radius:.6rem;font-size:.8rem;color:#94a3b8;transition:all .2s;cursor:pointer}
+.seg button[aria-pressed="true"]{background:rgba(99,102,241,.3);color:#e0e7ff}
+
+/* ---------- tones ---------- */
+.tone-emerald{--c:52 211 153}.tone-indigo{--c:129 140 248}.tone-violet{--c:167 139 250}.tone-teal{--c:45 212 191}
+.tone-sky{--c:56 189 248}.tone-green{--c:74 222 128}.tone-cyan{--c:34 211 238}.tone-amber{--c:251 191 36}
+
+/* ---------- index cards ---------- */
+.idx{position:relative;display:flex;flex-direction:column;border-radius:1.25rem;padding:1.25rem;overflow:hidden;
+  background:linear-gradient(180deg,rgb(var(--c)/.075),rgba(255,255,255,.02) 45%);
+  border:1px solid rgb(var(--c)/.2);transition:transform .35s cubic-bezier(.2,.7,.2,1),border-color .3s,box-shadow .3s}
+.idx::before{content:"";position:absolute;inset:0;background:radial-gradient(320px 140px at 100% 0%,rgb(var(--c)/.18),transparent 70%);pointer-events:none}
+.idx:hover{transform:translateY(-3px);border-color:rgb(var(--c)/.45);box-shadow:0 22px 60px -26px rgb(var(--c)/.6)}
+.idx>*{position:relative}
+.idx-ico{width:2.6rem;height:2.6rem;border-radius:.85rem;display:grid;place-items:center;background:rgb(var(--c)/.13);color:rgb(var(--c));border:1px solid rgb(var(--c)/.28)}
+.eyebrow{font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:rgb(var(--c)/.85);font-weight:600}
+.idx-num{font-family:Georgia,'Times New Roman',serif;font-weight:700;font-size:3.9rem;line-height:.9;letter-spacing:-.02em;
+  background:linear-gradient(180deg,#fff 10%,rgb(var(--c)) 120%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 22px rgb(var(--c)/.35))}
+.master{display:inline-block;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:.15rem .5rem;border-radius:999px;color:#fde68a;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.35)}
+.idx-title{margin-top:1rem;font-weight:600;color:#f1f5f9;font-size:1.02rem;line-height:1.35}
+.idx-formula{margin-top:.35rem;font-size:.74rem;color:#94a3b8;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;word-break:break-word}
+.idx-teaser{margin-top:.75rem;font-size:.9rem;line-height:1.6;color:#cbd5e1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.idx.open .idx-teaser{display:none}
+.idx-more{margin-top:auto;padding-top:1rem;display:flex;align-items:center;gap:.4rem;font-size:.82rem;font-weight:600;color:rgb(var(--c));cursor:pointer;background:none;border:0;text-align:left}
+.idx-more .chev{transition:transform .3s}
+.idx.open .idx-more .chev{transform:rotate(180deg)}
+.collapse{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s cubic-bezier(.2,.7,.2,1)}
+.idx.open .collapse{grid-template-rows:1fr}
+.collapse>.inner{overflow:hidden;min-height:0}
+.detail{padding-top:1rem;font-size:.9rem;line-height:1.65;color:#cbd5e1}
+.detail h4{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:rgb(var(--c));font-weight:700;margin:1rem 0 .35rem}
+.detail h4:first-child{margin-top:0}
+.detail .fl{font-weight:600;color:#f1f5f9;margin-top:.75rem;font-size:.88rem}
+.detail ul{list-style:none;padding:0;margin:.3rem 0 0}
+.detail li{position:relative;padding-left:1.1rem;margin:.25rem 0}
+.detail li::before{content:"";position:absolute;left:.1rem;top:.7em;width:.4rem;height:.4rem;border-radius:50%;background:rgb(var(--c)/.8)}
+.detail hr{border:0;border-top:1px dashed rgba(255,255,255,.12);margin:1.1rem 0 .2rem}
+.detail .sub{margin-left:.8rem;padding-left:.8rem;border-left:2px solid rgb(var(--c)/.35)}
+.extra{font-size:.72rem;color:#64748b;margin-top:.75rem}
+
+/* ---------- name chips ---------- */
+.ltr{display:inline-flex;flex-direction:column;align-items:center;min-width:2rem;padding:.25rem .3rem;border-radius:.6rem;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);line-height:1.15}
+.ltr i{font-style:normal;font-weight:600;font-size:.95rem;color:#e2e8f0}
+.ltr b{font-size:.72rem;font-weight:600;color:#6ee7b7}
+.ltr.v{background:rgba(99,102,241,.14);border-color:rgba(129,140,248,.4)}
+.ltr.v b{color:#a5b4fc}
+
+/* ---------- combo cards ---------- */
+.group-h{display:flex;align-items:center;gap:.75rem;margin:2rem 0 .9rem;font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;color:#94a3b8;font-weight:700}
+.group-h::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.15),transparent)}
+.combo{position:relative;border-radius:1.1rem;padding:1.1rem 1.25rem 1.1rem 1.4rem;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);overflow:hidden;transition:border-color .3s,transform .3s}
+.combo::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,#34d399,#6366f1)}
+.combo:hover{border-color:rgba(165,180,252,.35);transform:translateY(-2px)}
+.combo-no{display:inline-grid;place-items:center;width:1.7rem;height:1.7rem;border-radius:50%;font-size:.75rem;font-weight:700;color:#a7f3d0;background:rgba(16,185,129,.14);border:1px solid rgba(52,211,153,.35)}
+.chip{display:inline-flex;align-items:baseline;gap:.4rem;padding:.3rem .7rem;border-radius:999px;font-size:.84rem;font-weight:500;color:#e2e8f0;background:rgb(var(--c)/.12);border:1px solid rgb(var(--c)/.35)}
+.chip b{font-family:Georgia,'Times New Roman',serif;font-size:1.25rem;line-height:1;font-weight:700;color:rgb(var(--c))}
+.combo-text{margin-top:.8rem;line-height:1.7;color:#dbe4f0;font-size:.95rem}
+.badge{font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.2rem .55rem;border-radius:999px;border:1px solid}
+.badge-doc{color:#a7f3d0;background:rgba(16,185,129,.1);border-color:rgba(52,211,153,.35)}
+.badge-base{color:#c7d2fe;background:rgba(99,102,241,.12);border-color:rgba(129,140,248,.4)}
+.badge-synth{color:#fde68a;background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.35)}
+.combo-note{margin-top:.6rem;font-size:.78rem;color:#94a3b8}
+
+/* ---------- JSON ---------- */
+.json{background:#04070f;border:1px solid rgba(255,255,255,.08);border-radius:1rem;padding:1rem 1.1rem;max-height:68vh;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.78rem;line-height:1.6;color:#cbd5e1;white-space:pre;tab-size:2}
+.json .jk{color:#a5b4fc}.json .js{color:#6ee7b7}.json .jn{color:#fcd34d}.json .jb{color:#f9a8d4}
+.json::-webkit-scrollbar,.drawer-body::-webkit-scrollbar{width:10px;height:10px}
+.json::-webkit-scrollbar-thumb,.drawer-body::-webkit-scrollbar-thumb{background:rgba(148,163,184,.25);border-radius:10px;border:2px solid transparent;background-clip:content-box}
+
+/* ---------- drawer / toast ---------- */
+.overlay{position:fixed;inset:0;z-index:40;background:rgba(2,6,23,.65);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .3s}
+.overlay.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;z-index:50;width:min(26rem,100%);display:flex;flex-direction:column;background:#0a1020;border-left:1px solid rgba(255,255,255,.1);transform:translateX(102%);transition:transform .4s cubic-bezier(.2,.7,.2,1);box-shadow:-30px 0 80px -20px rgba(0,0,0,.8)}
+.drawer.on{transform:none}
+.drawer-body{flex:1;overflow:auto;padding:1rem 1.25rem}
+.prof{border-radius:1rem;padding:.9rem 1rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);transition:border-color .2s,background .2s}
+.prof:hover{border-color:rgba(52,211,153,.4);background:rgba(16,185,129,.06)}
+.prof-num{display:grid;place-items:center;width:2.8rem;height:2.8rem;border-radius:.85rem;font-family:Georgia,'Times New Roman',serif;font-size:1.6rem;font-weight:700;color:#a7f3d0;background:rgba(16,185,129,.12);border:1px solid rgba(52,211,153,.3);flex:none}
+.toast{position:fixed;left:50%;bottom:1.5rem;z-index:60;transform:translate(-50%,20px);opacity:0;pointer-events:none;padding:.7rem 1.1rem;border-radius:.9rem;background:#0f1a2e;border:1px solid rgba(52,211,153,.4);color:#d1fae5;font-size:.88rem;box-shadow:0 20px 50px -15px rgba(0,0,0,.8);transition:all .35s cubic-bezier(.2,.7,.2,1);max-width:90vw;text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.toast.err{border-color:rgba(251,113,133,.5);color:#fecdd3}
+
+/* ---------- motion ---------- */
+.reveal{opacity:0;transform:translateY(14px);animation:rise .65s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:calc(var(--i,0)*55ms)}
+@keyframes rise{to{opacity:1;transform:none}}
+.glow-title{background:linear-gradient(120deg,#ecfdf5 0%,#6ee7b7 35%,#a5b4fc 70%,#e0e7ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.orb{width:3rem;height:3rem;border-radius:50%;background:conic-gradient(from 200deg,#059669,#4f46e5,#0f172a,#059669);display:grid;place-items:center;box-shadow:0 0 30px rgba(16,185,129,.35);animation:spin 18s linear infinite}
+.orb>span{width:2.1rem;height:2.1rem;border-radius:50%;background:#060912;display:grid;place-items:center;animation:spin 18s linear infinite reverse;font-family:Georgia,'Times New Roman',serif;font-weight:700;color:#a7f3d0;font-size:1.2rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+  .reveal{opacity:1;transform:none}
+}
+
+/* ---------- print (PDF) ---------- */
+#printArea{display:none}
+@media print{
+  @page{size:A4;margin:14mm 14mm 16mm}
+  html,body{background:#fff!important}
+  body::before,.stars{display:none!important}
+  #app,#drawerWrap,#toast{display:none!important}
+  #printArea{display:block!important;color:#0f172a;font-family:Arial,Helvetica,sans-serif;font-size:10.5pt;line-height:1.55}
+  #printArea *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .p-head{border-bottom:2px solid #059669;padding-bottom:8pt;margin-bottom:10pt}
+  .p-head h1{font-family:Georgia,'Times New Roman',serif;font-size:24pt;margin:0;color:#064e3b;line-height:1.1}
+  .p-head p{margin:2pt 0 0;color:#475569;font-size:9.5pt}
+  .p-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:6pt;margin:8pt 0 12pt}
+  .p-meta div{border:1px solid #cbd5e1;border-radius:6pt;padding:5pt 7pt}
+  .p-meta small{display:block;color:#64748b;font-size:7.5pt;text-transform:uppercase;letter-spacing:.08em}
+  .p-meta strong{font-size:10.5pt}
+  #printArea h2{font-size:13pt;color:#312e81;border-left:4px solid #4f46e5;padding-left:7pt;margin:14pt 0 8pt;break-after:avoid}
+  .p-sum{width:100%;border-collapse:collapse;margin-bottom:6pt;font-size:9.5pt}
+  .p-sum th,.p-sum td{border:1px solid #cbd5e1;padding:4pt 6pt;text-align:left;vertical-align:top}
+  .p-sum th{background:#ecfdf5;color:#064e3b}
+  .p-sum td.n{font-weight:700;font-size:12pt;text-align:center;width:34pt;color:#312e81}
+  .p-idx{display:flex;gap:9pt;border:1px solid #cbd5e1;border-radius:7pt;padding:8pt 10pt;margin-bottom:8pt;break-inside:avoid}
+  .p-idx .big{flex:none;width:44pt;text-align:center;font-family:Georgia,'Times New Roman',serif;font-size:30pt;font-weight:700;color:#047857;line-height:1}
+  .p-idx .big small{display:block;font-family:Arial,Helvetica,sans-serif;font-size:6.5pt;color:#b45309;letter-spacing:.06em;text-transform:uppercase;margin-top:3pt}
+  .p-idx h3{margin:0;font-size:11.5pt;color:#0f172a}
+  .p-idx .en{color:#64748b;font-size:8.5pt;margin-left:4pt;font-weight:400}
+  .p-idx .fm{color:#64748b;font-size:8pt;font-family:ui-monospace,Consolas,monospace;margin:1pt 0 3pt}
+  .p-idx .tt{font-weight:600;color:#312e81;margin-bottom:3pt}
+  .p-idx p{margin:2pt 0}
+  .p-idx ul{margin:2pt 0 2pt 12pt;padding:0}
+  .p-def{font-size:8.8pt;color:#475569;margin:3pt 0 4pt;padding:4pt 6pt;background:#f8fafc;border-radius:4pt}
+  .p-combo{border-left:3px solid #4f46e5;padding:4pt 0 4pt 9pt;margin-bottom:7pt;break-inside:avoid}
+  .p-combo b{color:#064e3b}
+  .p-combo .src{font-size:8pt;color:#64748b}
+  .p-foot{margin-top:14pt;border-top:1px solid #cbd5e1;padding-top:6pt;color:#64748b;font-size:8pt}
+  .p-letters{font-size:9pt;margin:2pt 0}
+  .p-letters span{display:inline-block;margin-right:7pt}
+  .p-letters .v{color:#4338ca;font-weight:700}
+}
+
+
+/* JSON kết quả: ẩn các nút tải JSON và tab/panel JSON; giữ nguyên chức năng nội bộ để không ảnh hưởng ứng dụng. */
+#btnDlAll,#btnDl1,#btnDl2,#btnDlJson,#btnCopyJson,#t-json,#v-json{display:none!important}
+
+
+/* ===== update 2.0: tabs cuộn ngang + module mở rộng ===== */
+.tabs{overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;white-space:nowrap;padding:.65rem 1rem}
+@media (min-width:1100px){.tab{flex:1 1 0}}
+
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;max-width:21rem;margin:0 auto}
+.pcell{position:relative;aspect-ratio:1/1;display:grid;place-items:center;border-radius:.9rem;border:1px dashed rgba(148,163,184,.25);background:rgba(2,6,23,.45);color:#475569;transition:transform .25s,border-color .25s,background .25s}
+.pcell .pl{position:absolute;top:.35rem;left:.5rem;font-style:normal;font-size:.62rem;font-weight:700;color:rgba(148,163,184,.55)}
+.pcell .pv{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:1.9rem;line-height:1;letter-spacing:.02em;word-break:break-all;text-align:center;padding:0 .2rem}
+.pcell.on{border:1px solid rgb(var(--c)/.45);background:linear-gradient(180deg,rgb(var(--c)/.16),rgb(var(--c)/.05));color:#f1f5f9}
+.pcell.on.s{border-color:#34d399;box-shadow:0 0 0 1px rgba(52,211,153,.35),0 10px 30px -14px rgba(52,211,153,.7);color:#ecfdf5}
+.pcell.e{border:1px dashed rgba(251,113,133,.7);background:rgba(244,63,94,.07);color:#fda4af}
+.pcell:hover{transform:translateY(-2px)}
+
+.arrow{border-radius:.9rem;padding:.8rem .95rem;font-size:.88rem;line-height:1.6;color:#cbd5e1;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03)}
+.arrow.s{border-left:3px solid #34d399}.arrow.e{border-left:3px solid #fb7185}
+.arrow p{margin-top:.25rem}
+.arrow-no{font-size:.7rem;font-weight:700;letter-spacing:.08em;padding:.1rem .5rem;border-radius:999px;background:rgba(255,255,255,.07);color:#cbd5e1}
+
+.bar-row{display:grid;grid-template-columns:1.4rem 1fr auto;align-items:center;gap:.6rem;font-size:.8rem;color:#cbd5e1}
+.bar-n{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.25rem;font-weight:700;color:#a7f3d0;text-align:center}
+.bar{height:.7rem;border-radius:999px;background:rgba(148,163,184,.14);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#10b981,#6366f1);transform-origin:left;animation:grow .9s cubic-bezier(.2,.7,.2,1) both}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.bar-v{min-width:6.2rem;text-align:right;color:#94a3b8;font-size:.74rem}
+.bar-row.top .bar i{background:linear-gradient(90deg,#f59e0b,#fbbf24)}.bar-row.top .bar-n{color:#fde68a}
+.bar-row.miss .bar-n{color:#fda4af}.bar-row.miss .bar-v{color:#fda4af}
+
+.tbl{width:100%;border-collapse:collapse;font-size:.84rem;min-width:36rem}
+.tbl th,.tbl td{padding:.65rem .6rem;text-align:center;border-bottom:1px solid rgba(255,255,255,.07)}
+.tbl thead th{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:#94a3b8;font-weight:700}
+.tbl tbody th{text-align:left;color:#f1f5f9;font-weight:600}
+.tbl tbody th small{display:block;color:#64748b;font-weight:400;font-size:.72rem}
+.tbl tbody tr:last-child th,.tbl tbody tr:last-child td{border-bottom:0}
+.tbl .hit{color:#fbbf24;font-size:1.1rem}.tbl .nohit{color:#475569}
+
+.tag{display:inline-block;padding:.22rem .65rem;border-radius:999px;font-size:.78rem;color:rgb(var(--c,129 140 248));background:rgb(var(--c,129 140 248)/.1);border:1px solid rgb(var(--c,129 140 248)/.28)}
+.plain-list{list-style:none;padding:0;margin:0;display:grid;gap:.4rem;font-size:.9rem;color:#cbd5e1;line-height:1.55}
+.plain-list li{position:relative;padding-left:1.1rem}
+.plain-list li::before{content:"";position:absolute;left:.1rem;top:.62em;width:.4rem;height:.4rem;border-radius:50%;background:rgb(var(--c,52 211 153)/.85)}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0;display:grid;gap:.5rem;font-size:.88rem;color:#cbd5e1;line-height:1.55}
+.steps li{counter-increment:s;position:relative;padding-left:2rem}
+.steps li::before{content:counter(s);position:absolute;left:0;top:.05rem;width:1.35rem;height:1.35rem;border-radius:50%;display:grid;place-items:center;font-size:.72rem;font-weight:700;background:rgba(52,211,153,.15);border:1px solid rgba(52,211,153,.4);color:#a7f3d0}
+
+.chk{display:flex;gap:.75rem;align-items:flex-start;padding:.7rem .8rem;border-radius:.85rem;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03);cursor:pointer;transition:background .2s,border-color .2s}
+.chk:hover{background:rgba(52,211,153,.06);border-color:rgba(52,211,153,.3)}
+.chk input{position:absolute;opacity:0;pointer-events:none}
+.chk-box{flex:none;width:1.25rem;height:1.25rem;margin-top:.15rem;border-radius:.4rem;border:1.5px solid rgba(148,163,184,.5);display:grid;place-items:center;transition:all .2s}
+.chk input:checked+.chk-box{background:linear-gradient(135deg,#10b981,#6366f1);border-color:transparent}
+.chk input:checked+.chk-box::after{content:"";width:.35rem;height:.65rem;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.chk input:focus-visible+.chk-box{outline:2px solid #6ee7b7;outline-offset:2px}
+.chk-t{font-size:.9rem;line-height:1.55;color:#dbe4f0}
+.chk.done .chk-t{color:#64748b;text-decoration:line-through}
+.cat{display:block;margin-top:.2rem;font-style:normal;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:#64748b;font-weight:600}
+.dont{display:flex;gap:.7rem;align-items:flex-start;padding:.7rem .8rem;border-radius:.85rem;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03);font-size:.9rem;line-height:1.55;color:#dbe4f0}
+.dont p{flex:1}
+.sev{flex:none;margin-top:.1rem;font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.2rem .5rem;border-radius:999px;border:1px solid}
+.sev-Critical .sev{color:#fecdd3;background:rgba(244,63,94,.15);border-color:rgba(244,63,94,.5)}.sev-Critical{border-color:rgba(244,63,94,.3)}
+.sev-High .sev{color:#fed7aa;background:rgba(249,115,22,.14);border-color:rgba(249,115,22,.45)}
+.sev-Medium .sev{color:#fde68a;background:rgba(251,191,36,.12);border-color:rgba(251,191,36,.4)}
+.sev-Low .sev{color:#cbd5e1;background:rgba(148,163,184,.12);border-color:rgba(148,163,184,.35)}
+
+@media print{
+  .p-chart{display:inline-block;vertical-align:top;width:48%;margin:0 1% 8pt 0;break-inside:avoid}
+  .p-grid{display:grid;grid-template-columns:repeat(3,38pt);gap:3pt;margin:4pt 0}
+  .p-grid span{border:1px solid #cbd5e1;border-radius:4pt;text-align:center;padding:5pt 0;font-weight:700;font-size:12pt;color:#94a3b8}
+  .p-grid span.on{background:#ecfdf5;color:#047857;border-color:#6ee7b7}
+  .p-arrows{font-size:8.5pt;color:#475569}
+  .p-check{margin:2pt 0 6pt 0;padding:0;list-style:none}
+  .p-check li{margin:2pt 0;break-inside:avoid}
+}
+</style>
+</head>
+<body class="font-sans text-slate-200 antialiased">
+<div class="stars" aria-hidden="true"></div>
+
+<div id="app" class="relative z-10">
+
+  <!-- ============ HEADER ============ -->
+  <header class="max-w-6xl mx-auto px-4 sm:px-6 pt-6 sm:pt-8 flex items-center justify-between gap-3">
+    <div class="flex items-center gap-3">
+      <div class="orb" aria-hidden="true"><span>9</span></div>
+      <div class="leading-tight">
+        <p class="font-display text-xl sm:text-2xl font-semibold text-slate-100">Thần Số Học</p>
+        <p class="text-[.7rem] tracking-[.2em] uppercase text-emerald-300/80">Numerology · Pythagoras</p>
+      </div>
+    </div>
+    <button id="btnProfiles" type="button" class="btn">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>
+      Hồ sơ đã lưu
+      <span id="profCount" class="min-w-[1.4rem] h-[1.4rem] px-1 grid place-items-center rounded-full bg-emerald-400/15 border border-emerald-300/30 text-emerald-200 text-xs font-semibold">0</span>
+    </button>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 pb-20">
+
+    <!-- ============ HERO + FORM ============ -->
+    <section class="pt-10 sm:pt-14 pb-8 text-center reveal">
+      <p class="inline-flex items-center gap-2 text-xs tracking-[.22em] uppercase text-indigo-200/80 border border-indigo-300/20 bg-indigo-400/5 rounded-full px-3 py-1">Giải mã các con số của bạn</p>
+      <h1 class="font-display glow-title mt-5 text-5xl sm:text-7xl font-bold leading-[1.02] tracking-tight">Tra Cứu<br class="sm:hidden"> Thần Số Học</h1>
+      <p class="mt-5 max-w-2xl mx-auto text-slate-400 leading-relaxed text-[.98rem] sm:text-lg">
+        Nhập họ tên khai sinh và ngày sinh để nhận 7 chỉ số cốt lõi, Năm Thế Giới, Năm Cá Nhân cùng 15 cặp chỉ số kết hợp — cùng bản PDF và chức năng lưu hồ sơ.
+      </p>
+    </section>
+
+    <section class="glass p-5 sm:p-8 max-w-3xl mx-auto reveal" style="--i:2" aria-labelledby="formTitle">
+      <h2 id="formTitle" class="sr-only">Nhập thông tin tra cứu</h2>
+      <form id="f" novalidate autocomplete="off" class="grid gap-5 sm:grid-cols-6">
+        <div class="sm:col-span-6">
+          <label class="lbl" for="fName">Họ và tên khai sinh</label>
+          <input id="fName" class="field" type="text" placeholder="Ví dụ: Đào Vũ Hưng" maxlength="120" autocapitalize="words" spellcheck="false" required>
+        </div>
+
+        <div class="sm:col-span-4">
+          <label class="lbl" for="fDob">Ngày tháng năm sinh (dương lịch)</label>
+          <div class="relative">
+            <input id="fDob" class="field pr-14" type="text" inputmode="numeric" placeholder="dd/mm/yyyy" maxlength="10" required aria-describedby="dobHint">
+            <button id="btnCal" type="button" class="absolute right-1.5 top-1/2 -translate-y-1/2 w-10 h-10 grid place-items-center rounded-lg text-slate-300 hover:text-emerald-300 hover:bg-white/5 transition" aria-label="Chọn ngày từ lịch">
+              <svg class="ico w-5 h-5" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            </button>
+            <input id="fDate" type="date" class="absolute right-2 bottom-0 w-px h-px opacity-0 pointer-events-none" tabindex="-1" aria-hidden="true">
+          </div>
+          <p id="dobHint" class="mt-1.5 text-xs text-slate-500">Gõ dạng dd/mm/yyyy hoặc bấm biểu tượng lịch để chọn ngày, tháng, năm.</p>
+        </div>
+
+        <div class="sm:col-span-2">
+          <label class="lbl" for="fYear">Năm tra cứu</label>
+          <input id="fYear" class="field" type="number" inputmode="numeric" min="1900" max="2200" step="1">
+          <p class="mt-1.5 text-xs text-slate-500">Dùng cho Năm Cá Nhân &amp; Thế Giới.</p>
+        </div>
+
+        <label class="sm:col-span-6 flex items-start gap-3 text-sm text-slate-400 cursor-pointer select-none">
+          <input id="fVowel" type="checkbox" checked class="mt-1 w-4 h-4 rounded accent-emerald-500">
+          <span>Tính chữ <b class="text-slate-200">Y</b> là nguyên âm <span class="text-slate-500">(khuyến nghị cho tên tiếng Việt, ảnh hưởng đến Số Linh Hồn &amp; Nhân Cách)</span></span>
+        </label>
+
+        <p id="formError" role="alert" hidden class="sm:col-span-6 text-sm rounded-xl px-4 py-3 bg-rose-500/10 border border-rose-400/30 text-rose-200"></p>
+
+        <div class="sm:col-span-6 flex flex-wrap items-center gap-3 pt-1">
+          <button id="btnLookup" type="submit" class="btn btn-primary">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <span>Tra cứu ngay</span>
+          </button>
+          <button id="btnExample" type="button" class="btn">Điền ví dụ: Đào Vũ Hưng · 16/04/1993</button>
+          <button id="btnClear" type="button" class="btn ml-auto" aria-label="Xóa nội dung đã nhập">Xóa</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ============ KẾT QUẢ ============ -->
+    <section id="results" hidden class="mt-14 scroll-mt-4" aria-live="polite">
+
+      <div class="glass p-5 sm:p-7 reveal">
+        <div class="flex flex-wrap items-start justify-between gap-5">
+          <div class="min-w-0">
+            <p class="text-xs tracking-[.2em] uppercase text-emerald-300/80">Kết quả tra cứu</p>
+            <h2 id="rName" class="font-display text-3xl sm:text-5xl font-semibold text-slate-50 mt-1 break-words"></h2>
+            <div class="mt-3 flex flex-wrap gap-2 text-sm text-slate-300">
+              <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10">Sinh ngày <b id="rDob" class="text-slate-100"></b></span>
+              <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10">Năm tra cứu <b id="rYear" class="text-slate-100"></b></span>
+              <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-400/10 border border-emerald-300/30 text-emerald-200">Đường Đời <b id="rLife" class="font-display text-lg leading-none"></b></span>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button id="btnSave" type="button" class="btn"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>Lưu hồ sơ</button>
+            <button id="btnPdf" type="button" class="btn"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" x2="16" y1="13" y2="13"/><line x1="8" x2="16" y1="17" y2="17"/></svg>Xuất PDF</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="tabsBar" class="sticky top-2 z-30 mt-6 scroll-mt-2">
+        <div class="tabs" role="tablist" aria-label="Các phần kết quả">
+          <button class="tab" role="tab" data-view="step1" aria-selected="true" aria-controls="v-step1" id="t-step1">Bước 1 · Các chỉ số</button>
+          <button class="tab" role="tab" data-view="step2" aria-selected="false" aria-controls="v-step2" id="t-step2">Bước 2 · Kết hợp</button>
+          <button class="tab" role="tab" data-view="chart" aria-selected="false" aria-controls="v-chart" id="t-chart">Biểu đồ &amp; Đam mê</button>
+          <button class="tab" role="tab" data-view="karmic" aria-selected="false" aria-controls="v-karmic" id="t-karmic">Nợ &amp; Bài học</button>
+          <button class="tab" role="tab" data-view="career" aria-selected="false" aria-controls="v-career" id="t-career">Sự nghiệp</button>
+          <button class="tab" role="tab" data-view="love" aria-selected="false" aria-controls="v-love" id="t-love">Tình cảm</button>
+          <button class="tab" role="tab" data-view="check" aria-selected="false" aria-controls="v-check" id="t-check">Checklist</button>
+          <button class="tab" role="tab" data-view="json" aria-selected="false" aria-controls="v-json" id="t-json">JSON</button>
+        </div>
+      </div>
+
+      <!-- Bước 1 -->
+      <div id="v-step1" role="tabpanel" aria-labelledby="t-step1" class="mt-6">
+        <div class="flex flex-wrap items-end justify-between gap-3 mb-4">
+          <div>
+            <h3 class="font-display text-3xl font-semibold text-slate-50">Bước 1 — Các chỉ số cốt lõi</h3>
+            <p class="text-sm text-slate-400 mt-1">7 chỉ số từ họ tên &amp; ngày sinh, cùng Năm Thế Giới và Năm Cá Nhân.</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button id="btnExpandAll" type="button" class="btn btn-sm"><span>Mở rộng tất cả</span></button>
+          </div>
+        </div>
+        <div id="cards1" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 items-start"></div>
+      </div>
+
+      <!-- Bước 2 -->
+      <div id="v-step2" role="tabpanel" aria-labelledby="t-step2" class="mt-6" hidden>
+        <div class="flex flex-wrap items-end justify-between gap-3 mb-1">
+          <div>
+            <h3 class="font-display text-3xl font-semibold text-slate-50">Bước 2 — Kết hợp các chỉ số</h3>
+            
+          </div>
+        </div>
+        <div id="cards2"></div>
+      </div>
+
+      <!-- Mở rộng (update 2.0) -->
+      <div id="v-chart" role="tabpanel" aria-labelledby="t-chart" class="mt-6" hidden></div>
+      <div id="v-karmic" role="tabpanel" aria-labelledby="t-karmic" class="mt-6" hidden></div>
+      <div id="v-career" role="tabpanel" aria-labelledby="t-career" class="mt-6" hidden></div>
+      <div id="v-love" role="tabpanel" aria-labelledby="t-love" class="mt-6" hidden></div>
+      <div id="v-check" role="tabpanel" aria-labelledby="t-check" class="mt-6" hidden></div>
+
+      <!-- JSON -->
+      <div id="v-json" role="tabpanel" aria-labelledby="t-json" class="mt-6" hidden>
+        <div class="flex flex-wrap items-end justify-between gap-3 mb-4">
+          <div>
+            <h3 class="font-display text-3xl font-semibold text-slate-50">Dữ liệu kết quả</h3>
+            <p class="text-sm text-slate-400 mt-1">Định nghĩa và kết quả tương ứng với từng chỉ số, sẵn sàng để lưu hoặc tích hợp. <span id="jsonMeta" class="text-slate-500"></span></p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="seg" role="group" aria-label="Chọn phạm vi JSON">
+              <button type="button" data-json="step1" aria-pressed="false">Bước 1</button>
+              <button type="button" data-json="step2" aria-pressed="false">Bước 2</button>
+              <button type="button" data-json="ext" aria-pressed="false">Mở rộng</button>
+              <button type="button" data-json="full" aria-pressed="true">Toàn bộ</button>
+            </div>
+            <button id="btnCopyJson" type="button" class="btn btn-sm"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Sao chép</button>
+          </div>
+        </div>
+        <pre id="jsonView" class="json" tabindex="0" aria-label="Nội dung JSON"></pre>
+      </div>
+
+    </section>
+  </main>
+
+  <footer class="relative z-10 border-t border-white/5 py-8 text-center text-xs text-slate-500">
+    Thần Số Học · hệ Pythagoras · © <span id="footYear"></span> — Madre by Yul
+  </footer>
+</div>
+
+<!-- ============ DRAWER HỒ SƠ ============ -->
+<div id="drawerWrap">
+  <div id="overlay" class="overlay"></div>
+  <aside id="drawer" class="drawer" role="dialog" aria-modal="true" aria-labelledby="drTitle" aria-hidden="true">
+    <div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-white/10">
+      <div>
+        <h2 id="drTitle" class="font-display text-2xl font-semibold text-slate-50">Hồ sơ đã lưu</h2>
+        <p class="text-xs text-slate-400">Lưu trên trình duyệt này</p>
+      </div>
+      <button id="btnCloseDrawer" type="button" class="btn btn-sm" aria-label="Đóng"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    </div>
+    <div class="px-5 pt-4">
+      <div class="relative">
+        <svg class="ico absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="profSearch" class="field !py-2.5 pl-10 text-sm" type="search" placeholder="Tìm theo tên…" aria-label="Tìm hồ sơ theo tên">
+      </div>
+    </div>
+    <div id="profList" class="drawer-body"></div>
+    <div class="px-5 py-4 border-t border-white/10 flex flex-wrap gap-2">
+      <button id="btnExportProf" type="button" class="btn btn-sm"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>Xuất</button>
+      <button id="btnImportProf" type="button" class="btn btn-sm"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>Nhập</button>
+      <button id="btnClearProf" type="button" class="btn btn-sm btn-danger ml-auto">Xóa tất cả</button>
+      <input id="fileImport" type="file" accept="application/json,.json" class="hidden">
+    </div>
+  </aside>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<!-- Bản in / xuất PDF -->
+<div id="printArea" aria-hidden="true"></div>
+
+
+<script src="./data.js"></script>
+<script>
+(() => {
+'use strict';
+
+/* =====================================================================
+   DỮ LIỆU ĐỊNH NGHĨA (trích từ tài liệu đính kèm, nhúng sẵn trong file)
+   ===================================================================== */
+const DATA = window.YUL_DATA;
+
+const $  = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad2 = n => String(n).padStart(2, '0');
+
+/* ---------------- icons ---------------- */
+const ICONS = {
+  compass:'<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>',
+  star:'<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+  heart:'<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>',
+  eye:'<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>',
+  calendar:'<rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  zap:'<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+  mountain:'<path d="m8 3 4 8 5-5 5 15H2L8 3z"/>',
+  globe:'<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+  cycle:'<path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/>',
+  save:'<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>',
+  download:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>',
+  upload:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/>',
+  pdf:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" x2="16" y1="13" y2="13"/><line x1="8" x2="16" y1="17" y2="17"/>',
+  folder:'<path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/>',
+  x:'<path d="M18 6 6 18M6 6l12 12"/>',
+  trash:'<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
+  copy:'<rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
+  chev:'<path d="m6 9 6 6 6-6"/>',
+  search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+  wand:'<path d="m15 4 2 2M3 21 17 7l-2-2L1 19z" transform="translate(2 -1)"/><path d="M19 3v4M17 5h4M5 3v2M4 4h2"/>',
+  cal2:'<rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  eraser:'<path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"/><path d="M22 21H7"/><path d="m5 11 9 9"/>',
+  braces:'<path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5c0 1.1.9 2 2 2h1"/><path d="M16 21h1a2 2 0 0 0 2-2v-5c0-1.1.9-2 2-2a2 2 0 0 1-2-2V5a2 2 0 0 0-2-2h-1"/>',
+};
+const icon = (n, cls = '') => `<svg class="ico ${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n] || ''}</svg>`;
+
+/* =====================================================================
+   CẤU HÌNH CHỈ SỐ
+   ===================================================================== */
+const TYPES = [
+  { k:'life', code:'duong_doi',  short:'Đường đời',  name:'Số Đường Đời',  en:'Life Path Number',   icon:'compass',  tone:'emerald', role:'con đường và bài học lớn của cuộc đời' },
+  { k:'expr', code:'su_menh',    short:'Sứ mệnh',    name:'Số Sứ Mệnh',    en:'Expression Number',  icon:'star',     tone:'indigo',  role:'tài năng thiên bẩm và mục đích sống' },
+  { k:'soul', code:'linh_hon',   short:'Linh hồn',   name:'Số Linh Hồn',   en:'Soul Urge Number',   icon:'heart',    tone:'violet',  role:'khao khát thầm kín và động lực nội tâm' },
+  { k:'pers', code:'nhan_cach',  short:'Nhân cách',  name:'Số Nhân Cách',  en:'Personality Number', icon:'eye',      tone:'teal',    role:'lớp vỏ bên ngoài và ấn tượng ban đầu' },
+  { k:'bday', code:'ngay_sinh',  short:'Ngày sinh',  name:'Số Ngày Sinh',  en:'Birth Day Number',   icon:'calendar', tone:'sky',     role:'món quà và phản xạ tự nhiên bẩm sinh' },
+  { k:'att',  code:'thai_do',    short:'Thái độ',    name:'Số Thái Độ',    en:'Attitude Number',    icon:'zap',      tone:'green',   role:'phản xạ tức thì trước biến cố' },
+  { k:'mat',  code:'truong_thanh',short:'Trưởng thành',name:'Số Trưởng Thành',en:'Maturity Number',  icon:'mountain', tone:'cyan',    role:'diện mạo thành tựu ở nửa sau cuộc đời' },
+];
+const T = Object.fromEntries(TYPES.map(t => [t.k, t]));
+
+const PAIRS = [
+  ['life','expr'],['life','bday'],['life','mat'],
+  ['expr','bday'],['expr','pers'],['expr','mat'],['expr','soul'],
+  ['soul','pers'],['soul','att'],['soul','mat'],
+  ['pers','att'],['pers','mat'],
+  ['bday','att'],['bday','mat'],
+  ['att','mat'],
+];
+
+const MASTER_BASE = { 11:2, 22:4, 33:6 };
+const PYTHAGORAS = {};
+'ABCDEFGHI'.split('').forEach((c, i) => PYTHAGORAS[c] = i + 1);
+'JKLMNOPQR'.split('').forEach((c, i) => PYTHAGORAS[c] = i + 1);
+'STUVWXYZ'.split('').forEach((c, i) => PYTHAGORAS[c] = i + 1);
+
+/* Diễn giải Năm Thế Giới / Năm Cá Nhân (nội dung bổ sung – không có trong file định nghĩa) */
+const YEAR_TEXT = {
+  personal: {
+    1:{ t:'Năm khởi đầu & chủ động', s:'Mở đầu một chu kỳ 9 năm mới. Đây là thời điểm gieo hạt: dám bắt đầu, quyết định điều mình thật sự muốn và tự đứng trên đôi chân của mình.', tips:['Đặt mục tiêu rõ ràng và hành động sớm','Tin vào bản thân, hạn chế phụ thuộc','Tránh nóng vội, áp đặt người khác'] },
+    2:{ t:'Năm hợp tác & kiên nhẫn', s:'Nhịp độ chậm lại để vun đắp các mối quan hệ. Thành quả đến từ sự lắng nghe, hợp tác và chờ đợi đúng thời điểm.', tips:['Ưu tiên làm việc nhóm và kết nối','Kiên nhẫn với tiến độ, đừng ép kết quả','Chăm sóc cảm xúc và ranh giới cá nhân'] },
+    3:{ t:'Năm sáng tạo & kết nối', s:'Năng lượng của biểu đạt, giao tiếp và niềm vui. Thích hợp để sáng tạo, mở rộng vòng quan hệ và để bản thân tỏa sáng.', tips:['Chia sẻ ý tưởng, tham gia hoạt động xã hội','Cho phép mình vui chơi và thử nghiệm','Giữ tập trung, tránh dàn trải mục tiêu'] },
+    4:{ t:'Năm nền tảng & kỷ luật', s:'Năm của công việc bền bỉ: xây nền móng, sắp xếp lại tài chính, sức khỏe và hệ thống. Làm chắc từng bước sẽ có lợi lâu dài.', tips:['Lập kế hoạch chi tiết và theo sát','Chăm lo sức khỏe, tài chính, giấy tờ','Linh hoạt khi kế hoạch phải điều chỉnh'] },
+    5:{ t:'Năm thay đổi & tự do', s:'Biến động và cơ hội bất ngờ xuất hiện. Phù hợp để trải nghiệm mới, di chuyển, thay đổi môi trường hoặc cách làm cũ.', tips:['Đón nhận thay đổi như một cơ hội học hỏi','Thử điều mới nhưng có tính toán rủi ro','Giữ cam kết quan trọng, tránh buông thả'] },
+    6:{ t:'Năm gia đình & trách nhiệm', s:'Trọng tâm hướng về gia đình, tình yêu, nhà cửa và những người thân. Cần cân bằng giữa chăm sóc người khác và chăm sóc chính mình.', tips:['Dành thời gian chất lượng cho người thân','Nhận trách nhiệm vừa sức, không ôm đồm','Chăm chút không gian sống và mối quan hệ'] },
+    7:{ t:'Năm chiêm nghiệm & học hỏi', s:'Năm hướng nội: nghỉ ngơi, nghiên cứu, nhìn lại và tìm câu trả lời bên trong. Không phải lúc để đẩy mạnh bên ngoài.', tips:['Dành thời gian yên tĩnh, đọc, học, thiền','Tin vào trực giác và quan sát sâu','Đừng tự cô lập, vẫn giữ kết nối cần thiết'] },
+    8:{ t:'Năm thành tựu & tài chính', s:'Năm của kết quả vật chất, quyền lực và sự công nhận. Những nỗ lực trước đó có cơ hội được đền đáp nếu quản trị tốt.', tips:['Chủ động đàm phán, mở rộng sự nghiệp','Quản lý dòng tiền chặt chẽ','Giữ cân bằng, tránh để tham vọng lấn át'] },
+    9:{ t:'Năm hoàn tất & buông bỏ', s:'Khép lại chu kỳ 9 năm. Thời điểm tổng kết, chữa lành, buông những gì không còn phù hợp để chuẩn bị cho khởi đầu mới.', tips:['Hoàn thành việc dang dở','Tha thứ, dọn dẹp những gì đã cũ','Hạn chế bắt đầu dự án lớn mới'] },
+  },
+  world: {
+    1:{ t:'Khởi đầu chu kỳ mới', s:'Bầu không khí chung thiên về khởi xướng, đổi mới và dám bắt đầu. Những ý tưởng và xu hướng mới có xu hướng định hình cho nhiều năm tiếp theo.', tips:['Thuận lợi để mở đầu dự án mới','Ưu tiên sáng kiến và tính chủ động','Cẩn trọng với tâm lý nóng vội'] },
+    2:{ t:'Hợp tác & hòa giải', s:'Bối cảnh chung nghiêng về hợp tác, đàm phán và củng cố quan hệ. Tiến triển chậm hơn nhưng bền vững khi biết lắng nghe.', tips:['Đề cao đối thoại và thỏa hiệp','Phù hợp xây dựng đối tác lâu dài','Kiên nhẫn trước các tiến trình chậm'] },
+    3:{ t:'Sáng tạo & truyền thông', s:'Năng lượng chung thiên về biểu đạt, truyền thông, nghệ thuật và giao lưu. Thông tin và ý tưởng lan nhanh.', tips:['Thuận lợi cho truyền thông, sáng tạo','Mở rộng kết nối xã hội','Tránh dàn trải và thiếu tập trung'] },
+    4:{ t:'Xây dựng nền tảng', s:'Giai đoạn của kỷ luật, củng cố hệ thống, tài chính và hạ tầng. Làm việc chắc chắn quan trọng hơn chạy theo tốc độ.', tips:['Ưu tiên tính ổn định và quy trình','Rà soát tài chính, pháp lý, hệ thống','Chuẩn bị cho các bước mở rộng sau'] },
+    5:{ t:'Biến động & mở rộng', s:'Thay đổi nhanh, cơ hội và bất định đi cùng nhau. Phù hợp để thích nghi, dịch chuyển và thử nghiệm cách làm mới.', tips:['Linh hoạt trước biến động','Mở rộng thị trường, trải nghiệm mới','Tránh quyết định bốc đồng'] },
+    6:{ t:'Gia đình & cộng đồng', s:'Chủ đề trách nhiệm, chăm sóc, giáo dục và gắn kết cộng đồng nổi lên. Các giá trị gia đình, sức khỏe và hài hòa được chú trọng.', tips:['Đề cao chăm sóc và trách nhiệm chung','Thuận lợi cho dịch vụ cộng đồng, giáo dục','Cân bằng giữa cho đi và tự chăm sóc'] },
+    7:{ t:'Chiêm nghiệm & nghiên cứu', s:'Nhịp độ hướng nội: nghiên cứu, nhìn lại, học hỏi và tìm ý nghĩa sâu hơn. Thích hợp cho tri thức, khoa học và phát triển bên trong.', tips:['Đầu tư vào học tập, nghiên cứu','Dành thời gian nhìn lại và điều chỉnh','Không vội vã đẩy kết quả bên ngoài'] },
+    8:{ t:'Kinh tế & thành tựu', s:'Chủ đề tài chính, quyền lực, tổ chức và kết quả thực tế nổi bật. Quản trị tốt sẽ gặt hái được thành quả rõ ràng.', tips:['Tập trung hiệu quả và quản trị nguồn lực','Thuận lợi cho kinh doanh, đầu tư có kế hoạch','Giữ đạo đức và sự cân bằng'] },
+    9:{ t:'Kết thúc chu kỳ & nhân đạo', s:'Khép lại chu kỳ 9 năm: tổng kết, buông bỏ cái cũ và hướng đến các giá trị nhân văn, chữa lành chung.', tips:['Hoàn tất những việc còn dang dở','Buông bỏ điều không còn phù hợp','Chuẩn bị tinh thần cho khởi đầu mới'] },
+  }
+};
+
+/* =====================================================================
+   THUẬT TOÁN
+   ===================================================================== */
+const digitSum = n => String(Math.abs(n)).split('').reduce((a, d) => a + Number(d), 0);
+
+function reduceNum(n, masters = [11, 22, 33]) {
+  const chain = [n];
+  while (n > 9 && !masters.includes(n)) { n = digitSum(n); chain.push(n); }
+  return { value: n, chain };
+}
+const chainStr = c => c.join(' → ');
+
+function stripVN(s) {
+  return String(s).replace(/đ/g, 'd').replace(/Đ/g, 'D').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+function analyzeName(name, yVowel) {
+  const vowels = new Set(['A','E','I','O','U']);
+  if (yVowel) vowels.add('Y');
+  const words = name.trim().split(/\s+/).filter(Boolean).map(w => {
+    const letters = stripVN(w).toUpperCase().replace(/[^A-Z]/g, '').split('').map(ch => ({ ch, v: PYTHAGORAS[ch], vowel: vowels.has(ch) }));
+    return { raw: w, letters };
+  }).filter(w => w.letters.length);
+  let total = 0, vowel = 0, cons = 0;
+  words.forEach(w => w.letters.forEach(l => { total += l.v; if (l.vowel) vowel += l.v; else cons += l.v; }));
+  return { words, total, vowel, cons };
+}
+
+function parseDOB(t) {
+  t = String(t || '').trim();
+  let m = t.match(/^(\d{1,2})[\/\-.\s](\d{1,2})[\/\-.\s](\d{4})$/), d, mo, y;
+  if (m) { d = +m[1]; mo = +m[2]; y = +m[3]; }
+  else {
+    m = t.match(/^(\d{4})[\/\-.](\d{1,2})[\/\-.](\d{1,2})$/);
+    if (!m) return { error: 'Ngày sinh chưa đúng định dạng. Hãy nhập dạng dd/mm/yyyy, ví dụ 16/04/1993.' };
+    y = +m[1]; mo = +m[2]; d = +m[3];
+  }
+  if (y < 1900) return { error: 'Năm sinh cần từ 1900 trở đi.' };
+  const dt = new Date(y, mo - 1, d);
+  if (dt.getFullYear() !== y || dt.getMonth() !== mo - 1 || dt.getDate() !== d) return { error: 'Ngày sinh không tồn tại trong lịch. Vui lòng kiểm tra lại.' };
+  if (dt > new Date()) return { error: 'Ngày sinh đang ở tương lai. Vui lòng kiểm tra lại.' };
+  return { d, m: mo, y };
+}
+
+function numEntry(k, v) { return (DATA.nums[k] || {})[String(v)] || null; }
+
+function sentence(s) {
+  s = String(s || '').replace(/\([^)]*\)/g, '').replace(/\s+/g, ' ').trim();
+  s = s.toLocaleLowerCase('vi');
+  return s.charAt(0).toLocaleUpperCase('vi') + s.slice(1);
+}
+function tagline(k, v) { const e = numEntry(k, v); return e ? sentence(e.title) : ''; }
+
+function computeAll(profile) {
+  const { name, d, m, y, lookupYear, yVowel } = profile;
+  const nm = analyzeName(name, yVowel);
+  const dateDigits = (pad2(d) + pad2(m) + String(y)).split('').map(Number);
+  const lpSum = dateDigits.reduce((a, b) => a + b, 0);
+
+  const lp = reduceNum(lpSum);
+  const ex = reduceNum(nm.total);
+  const so = reduceNum(nm.vowel, []); // Chỉ số Linh hồn luôn rút gọn về 1–9, không giữ 11/22/33
+  const pe = reduceNum(nm.cons);
+  const bd = reduceNum(d, [11, 22]); // Chỉ số Ngày Sinh giữ Master 11 và 22; các ngày khác rút gọn về 1–9
+  const at = reduceNum(d + m, [11, 22]);
+  const ma = reduceNum(lp.value + ex.value, []);
+
+  const idx = {
+    life: { value: lp.value, formula: `${dateDigits.join('+')} = ${chainStr(lp.chain)}` },
+    expr: { value: ex.value, formula: `Σ chữ cái họ tên = ${chainStr(ex.chain)}` },
+    soul: { value: so.value, formula: `Σ nguyên âm = ${chainStr(so.chain)}` },
+    pers: { value: pe.value, formula: `Σ phụ âm = ${chainStr(pe.chain)}` },
+    bday: { value: bd.value, formula: `Ngày sinh ${chainStr(bd.chain)}` },
+    att:  { value: at.value, formula: `Ngày ${d} + tháng ${m} = ${chainStr(at.chain)}` },
+    mat:  { value: ma.value, formula: `${lp.value} + ${ex.value} = ${chainStr(ma.chain)}` },
+  };
+
+  const wy = reduceNum(digitSum(lookupYear), []);
+  const dayMonthDigits = (pad2(d) + pad2(m)).split('').map(Number);
+  const yearDigits = String(lookupYear).split('').map(Number);
+  const pySum = [...dayMonthDigits, ...yearDigits].reduce((a, b) => a + b, 0);
+  const py = reduceNum(pySum, []);
+  const years = {
+    world:    { value: wy.value, formula: `${yearDigits.join('+')} = ${chainStr([digitSum(lookupYear), ...wy.chain.slice(1)])}` },
+    personal: { value: py.value, formula: `${dayMonthDigits.join('+')} + ${yearDigits.join('+')} = ${chainStr(py.chain)}` },
+  };
+
+  const res = { profile, name: nm, idx, years };
+  res.combos = PAIRS.map((p, i) => buildCombo(i + 1, p[0], idx[p[0]].value, p[1], idx[p[1]].value));
+  res.chains = { life: lp.chain, expr: ex.chain, soul: so.chain, pers: pe.chain };
+  res.ext = computeExt(res);
+  return res;
+}
+
+/* ---- kết hợp 2 chỉ số ---- */
+const SYNTH_COMBOS = new Set();
+function lookupCombo(ta, a, tb, b) {
+  const directKey = `${ta}${a}|${tb}${b}`, reverseKey = `${tb}${b}|${ta}${a}`;
+  const get = (x, y) => DATA.combos[`${ta}${x}|${tb}${y}`] ?? DATA.combos[`${tb}${y}|${ta}${x}`];
+  let text = get(a, b);
+  if (text) return { text, source: (SYNTH_COMBOS.has(directKey) || SYNTH_COMBOS.has(reverseKey)) ? 'synth' : 'doc' };
+  const ab = MASTER_BASE[a] ?? a, bb = MASTER_BASE[b] ?? b;
+  const tries = [];
+  if (MASTER_BASE[a]) tries.push([ab, b]);
+  if (MASTER_BASE[b]) tries.push([a, bb]);
+  if (MASTER_BASE[a] || MASTER_BASE[b]) tries.push([ab, bb]);
+  for (const [x, y] of tries) {
+    text = get(x, y);
+    if (text) return { text, source: 'base', used: [x, y] };
+  }
+  return { text: synthCombo(ta, a, tb, b), source: 'synth' };
+}
+
+function synthCombo(ta, a, tb, b) {
+  const A = T[ta], B = T[tb];
+  const same = (MASTER_BASE[a] ?? a) === (MASTER_BASE[b] ?? b);
+  let s = `${A.short} ${a} đại diện cho ${A.role}, mang tinh thần “${tagline(ta, a)}”. ${B.short} ${b} đại diện cho ${B.role}, mang tinh thần “${tagline(tb, b)}”. `;
+  s += same
+    ? 'Hai chỉ số cùng năng lượng nền nên cộng hưởng mạnh: điểm mạnh được khuếch đại, đồng thời điểm cần lưu ý của số này cũng bị nhân lên và cần chú tâm cân bằng.'
+    : 'Hai năng lượng khác nhau cùng tồn tại trong bạn: hãy dùng điểm mạnh của chỉ số này để nâng đỡ điểm cần lưu ý của chỉ số kia, và nhìn mâu thuẫn bên trong như một bài học để hài hòa chính mình.';
+  return s;
+}
+
+// Bảo đảm mọi giá trị hợp lệ của 16 nhóm cặp đều có nội dung tra cứu.
+// Các mục có sẵn trong tài liệu được giữ nguyên; tổ hợp còn thiếu được diễn giải
+// từ định nghĩa/chủ đề của từng chỉ số bởi synthCombo(), không giả làm trích dẫn nguyên văn.
+function ensureAllPairDefinitions() {
+  for (const [ka, kb] of PAIRS) {
+    const aVals = Object.keys(DATA.nums[ka] || {}).map(Number);
+    const bVals = Object.keys(DATA.nums[kb] || {}).map(Number);
+    for (const a of aVals) for (const b of bVals) {
+      const key = `${ka}${a}|${kb}${b}`;
+      const reverse = `${kb}${b}|${ka}${a}`;
+      if (!DATA.combos[key] && !DATA.combos[reverse]) {
+        DATA.combos[key] = synthCombo(ka, a, kb, b);
+        SYNTH_COMBOS.add(key);
+      }
+    }
+  }
+}
+
+ensureAllPairDefinitions();
+
+function buildCombo(no, ka, a, kb, b) {
+  const r = lookupCombo(ka, a, kb, b);
+  let note = '';
+  if (r.source === 'base') {
+    note = `Tài liệu chưa có mục riêng cho ${T[ka].short} ${a} + ${T[kb].short} ${b}. Nội dung được diễn giải theo năng lượng nền: ${T[ka].short} ${r.used[0]} + ${T[kb].short} ${r.used[1]} (11→2, 22→4, 33→6).`;
+  } else if (r.source === 'synth') {
+    note = 'Tài liệu chưa có mục riêng cho cặp số này, nội dung được tổng hợp tự động từ định nghĩa của từng chỉ số.';
+  }
+  return { no, a: { k: ka, v: a }, b: { k: kb, v: b }, text: r.text, source: r.source, note, used: r.used || null };
+}
+
+/* =====================================================================
+   JSON XUẤT RA
+   ===================================================================== */
+const SRC_CODE = { doc: 'tai_lieu', base: 'nang_luong_nen', synth: 'tong_hop' };
+const SRC_LABEL = { doc: '', base: 'Theo năng lượng nền', synth: 'Tổng hợp tự động' };
+
+function fieldsJSON(entry) {
+  if (!entry) return [];
+  return entry.fields.map(f => {
+    const o = { muc: f.label };
+    if (f.text) o.noi_dung = f.text;
+    if (f.items && f.items.length) o.danh_sach = f.items;
+    return o;
+  });
+}
+function hoSoJSON(res) {
+  const p = res.profile;
+  return { ho_ten: p.name, ngay_sinh: `${pad2(p.d)}/${pad2(p.m)}/${p.y}`, nam_tra_cuu: p.lookupYear, coi_y_la_nguyen_am: !!p.yVowel };
+}
+function step1JSON(res) {
+  return {
+    ho_so: hoSoJSON(res),
+    phuong_phap: 'Thần số học Pythagoras (A=1…I=9, J=1…R=9, S=1…Z=8; chữ tiếng Việt được quy về chữ Latin không dấu, Đ=D). Với Chỉ số Trưởng Thành, quy đổi 11→2, 22→4, 33→6 để kết quả luôn nằm trong khoảng 1–9.',
+    chi_so: TYPES.map(t => {
+      const r = res.idx[t.k], def = DATA.defs[t.k], e = numEntry(t.k, r.value);
+      return {
+        ma: t.code, ten: t.name, ten_en: t.en,
+        gia_tri: r.value, la_so_bac_thay: [11, 22, 33].includes(r.value),
+        cong_thuc: r.formula,
+        tieu_de: e ? sentence(e.title) : null,
+        dinh_nghia: def ? { dinh_nghia: def.dinh_nghia, y_nghia: def.y_nghia, cong_dung: def.cong_dung } : null,
+        dien_giai: { cho_so: r.value, noi_dung: fieldsJSON(e) },
+      };
+    }),
+    nam: {
+      nam_the_gioi:  { nam: res.profile.lookupYear, gia_tri: res.years.world.value,    cong_thuc: res.years.world.formula,    tieu_de: YEAR_TEXT.world[res.years.world.value].t,       mo_ta: YEAR_TEXT.world[res.years.world.value].s,       goi_y: YEAR_TEXT.world[res.years.world.value].tips },
+      nam_ca_nhan:   { nam: res.profile.lookupYear, gia_tri: res.years.personal.value, cong_thuc: res.years.personal.formula, tieu_de: YEAR_TEXT.personal[res.years.personal.value].t, mo_ta: YEAR_TEXT.personal[res.years.personal.value].s, goi_y: YEAR_TEXT.personal[res.years.personal.value].tips },
+      ghi_chu: 'Phần diễn giải Năm Thế Giới / Năm Cá Nhân là nội dung bổ sung, không nằm trong file định nghĩa.',
+    },
+  };
+}
+function step2JSON(res) {
+  return {
+    ho_so: hoSoJSON(res),
+    ket_hop: res.combos.map(c => ({
+      stt: c.no,
+      cap: `${T[c.a.k].short} + ${T[c.b.k].short}`,
+      x: { ma: T[c.a.k].code, ten: T[c.a.k].name, gia_tri: c.a.v },
+      y: { ma: T[c.b.k].code, ten: T[c.b.k].name, gia_tri: c.b.v },
+      nguon: SRC_CODE[c.source],
+      ...(c.used ? { dien_giai_theo: { x: c.used[0], y: c.used[1] } } : {}),
+      ...(c.note ? { ghi_chu: c.note } : {}),
+      noi_dung: c.text,
+    })),
+  };
+}
+function fullJSON(res) {
+  return { phien_ban: '1.0', tao_luc: new Date().toISOString(), ho_so: hoSoJSON(res), buoc_1: step1JSON(res), buoc_2: step2JSON(res), mo_rong: extJSON(res) };
+}
+
+/* =====================================================================
+   MỞ RỘNG (update 2.0)
+   Biểu đồ Ngày sinh/Tên · Đam mê & Lợi thế · Nợ nhân quả & Chỉ số thiếu
+   Định hướng Sự nghiệp · Tình cảm · Checklist hành động
+   Toàn bộ nội dung diễn giải được đọc từ data.js
+   ===================================================================== */
+const GROUP_TONE = {
+  LEADERSHIP:'emerald', CREATIVE:'violet', HEALING_SERVICE:'teal', ANALYTICAL:'sky',
+  ASSERTIVE_LEADER:'amber', SENSITIVE_HEALER:'teal', EXPRESSIVE_EXPLORER:'violet', ANALYTICAL_REALIST:'sky',
+};
+const LOC = {
+  'Birth Day Number':'Số Ngày Sinh', 'Life Path Number':'Số Đường Đời', 'Expression Number':'Số Sứ Mệnh',
+  'Soul Urge Number':'Số Linh Hồn', 'Personality Number':'Số Nhân Cách',
+};
+const DEBT_CODES = ['13/4','14/5','16/7','19/1'];
+const DEBT_BY_VALUE = { 13:'13/4', 14:'14/5', 16:'16/7', 19:'19/1' };
+const SEV_VI = { Critical:'Nghiêm trọng', High:'Cao', Medium:'Trung bình', Low:'Nhẹ' };
+
+function countsFromValues(vals) { const c = Array(10).fill(0); vals.forEach(n => { if (n >= 1 && n <= 9) c[n]++; }); return c; }
+const countsObj = c => Object.fromEntries([1,2,3,4,5,6,7,8,9].map(n => [n, c[n]]));
+const firstSentence = s => String(s).split(/(?<=[.!?])\s/)[0];
+const listJoin = a => a.join(' – ');
+
+function chartOf(counts) {
+  const has = n => counts[n] > 0;
+  return {
+    counts,
+    suc_manh: DATA.charts.suc_manh.filter(a => a.so.every(has)),
+    thu_thach: DATA.charts.thu_thach.filter(a => a.so.every(n => !has(n))),
+  };
+}
+
+/* ---- Nợ nhân quả & chỉ số thiếu (theo đặc tả: check_karmic_debts / check_karmic_lessons) ---- */
+function checkKarmicDebts(day, chains) {
+  const found = [];
+  const add = (v, location) => {
+    const code = DEBT_BY_VALUE[v];
+    if (code && !found.some(x => x.debt_code === code && x.location === location)) found.push({ debt_code: code, location });
+  };
+  add(day, 'Birth Day Number');
+  chains.life.forEach(v => add(v, 'Life Path Number'));
+  chains.expr.forEach(v => add(v, 'Expression Number'));
+  chains.soul.forEach(v => add(v, 'Soul Urge Number'));
+  chains.pers.forEach(v => add(v, 'Personality Number'));
+  return found;
+}
+function checkKarmicLessons(nameCounts) { return [1,2,3,4,5,6,7,8,9].filter(n => nameCounts[n] === 0); }
+
+/* ---- Nhóm năng lượng ---- */
+function groupOf(groups, n) {
+  for (const k of Object.keys(groups)) if (groups[k].so.includes(n)) return k;
+  return null;
+}
+function pickPrimary(items, groups) {
+  // items theo thứ tự ưu tiên; nhóm nhiều phiếu nhất thắng, hòa thì lấy nhóm của chỉ số đứng trước
+  const votes = {};
+  items.forEach(it => { it.group = groupOf(groups, it.v); votes[it.group] = (votes[it.group] || 0) + 1; });
+  let best = null;
+  items.forEach(it => { if (best === null || votes[it.group] > votes[best]) best = it.group; });
+  return { primary: best, votes };
+}
+
+function computeExt(res) {
+  const p = res.profile;
+  const birthVals = (pad2(p.d) + pad2(p.m) + String(p.y)).split('').map(Number);
+  const birthCounts = countsFromValues(birthVals);
+  const nameCounts = countsFromValues(res.name.words.flatMap(w => w.letters.map(l => l.v)));
+  const nameTotal = [1,2,3,4,5,6,7,8,9].reduce((a, n) => a + nameCounts[n], 0);
+  const combined = birthCounts.map((c, i) => c + nameCounts[i]);
+  const charts = { birth: chartOf(birthCounts), name: chartOf(nameCounts), combined: chartOf(combined) };
+
+  const maxF = Math.max(...nameCounts.slice(1));
+  const passion = { max: maxF, so: [1,2,3,4,5,6,7,8,9].filter(n => nameCounts[n] === maxF), total: nameTotal };
+
+  const debts = checkKarmicDebts(p.d, res.chains);
+  const lessons = checkKarmicLessons(nameCounts);
+
+  const C = DATA.career, L = DATA.love;
+  const trinity = [
+    { k:'life', label:'Đường Đời', v: res.idx.life.value },
+    { k:'expr', label:'Sứ Mệnh',   v: res.idx.expr.value },
+    { k:'mat',  label:'Trưởng Thành', v: res.idx.mat.value },
+  ];
+  const cp = pickPrimary(trinity, C.nhom);
+  const triad = [
+    { k:'soul', label:'Linh Hồn', v: res.idx.soul.value },
+    { k:'att',  label:'Thái Độ',  v: res.idx.att.value },
+    { k:'pers', label:'Nhân Cách', v: res.idx.pers.value },
+  ];
+  const lp = pickPrimary(triad, L.nhom);
+
+  const ext = { birthCounts, nameCounts, charts, passion, karmic: { debts, lessons },
+    career: { trinity, primary: cp.primary, votes: cp.votes },
+    love: { triad, primary: lp.primary, votes: lp.votes } };
+  ext.checklist = buildChecklist(res, ext);
+  return ext;
+}
+
+function careerEntry(n) { return DATA.career.muc.find(e => e.so.includes(n)) || null; }
+function careerAdvice(group) {
+  const a = DATA.career.nhom[group].loi_khuyen || { text: '', nguon: 'bo_sung' };
+  return { text: a.text, source: a.nguon === 'tai_lieu' ? 'doc' : 'extra' };
+}
+function careerSummary(res) {
+  const e = res.ext.career;
+  const lead = e.trinity.find(t => t.group === e.primary) || e.trinity[0];
+  const ent = careerEntry(lead.v);
+  const g = DATA.career.nhom[e.primary];
+  const industries = g.vi_du ? g.vi_du.top_industries : (ent ? ent.nganh.slice(0, 3) : []);
+  const env = g.vi_du ? g.vi_du.ideal_work_environment : (ent ? ent.moi_truong.replace(/\.$/, '').split(/,\s*/).slice(0, 3).map(s => s.charAt(0).toLocaleUpperCase('vi') + s.slice(1)) : []);
+  return { group: e.primary, industries, env, advice: careerAdvice(e.primary).text };
+}
+function loveSummary(res, group) {
+  const g = DATA.love.nhom[group];
+  const ex = g.vi_du || null;
+  return {
+    group,
+    core_love_language: ex ? ex.core_love_language : g.phong_cach,
+    communication_tips: ex ? ex.communication_tips : g.giao_tiep,
+    conflict_resolution: {
+      what_to_avoid: ex ? ex.what_to_avoid : g.tranh,
+      actionable_steps: ex ? ex.actionable_steps : [g.nen],
+    },
+  };
+}
+
+/* ---- Checklist hành động ---- */
+function buildChecklist(res, ext) {
+  const CL = DATA.checklist, base = n => (MASTER_BASE[n] ?? n);
+  const life = CL[String(base(res.idx.life.value))];
+  const dos = [], donts = [];
+  const addDo = (action, category) => dos.push({ id: 'dos_' + (dos.length + 1), action, category, is_completed: false });
+  const addDont = (action, category, severity) => donts.push({ id: 'donts_' + (donts.length + 1), action, category, severity });
+
+  life.dos.forEach(a => addDo(a, 'Core Strength'));
+  const exBase = base(res.idx.expr.value);
+  if (exBase !== base(res.idx.life.value) && CL[String(exBase)]) addDo(CL[String(exBase)].dos[0], 'Expression Strength');
+  const seen = new Set();
+  [ext.charts.birth, ext.charts.name].forEach(ch => ch.suc_manh.forEach(a => {
+    if (seen.has(a.ten)) return; seen.add(a.ten);
+    addDo(`Phát huy ${a.ten} (${listJoin(a.so)}): ${firstSentence(a.noi_dung)}`, 'Strength Arrow');
+  }));
+  ext.karmic.lessons.forEach(n => { const l = DATA.karmic.thieu[String(n)]; addDo(l.ren_luyen, 'Karmic Lesson Compensation'); });
+  ext.karmic.debts.forEach(d => { const x = DATA.karmic.no[d.debt_code]; addDo(`Chuyển hóa nợ ${d.debt_code}: ${x.chuyen_hoa}`, 'Karmic Debt Transformation'); });
+
+  life.donts.forEach(a => addDont(a, 'Core Blind Spot', 'High'));
+  ext.karmic.debts.forEach(d => { const x = DATA.karmic.no[d.debt_code]; addDont(`Cảnh báo (Nợ ${d.debt_code} – ${LOC[d.location]}): ${x.mat_toi}`, 'Karmic Debt Warning', 'Critical'); });
+  ext.karmic.lessons.forEach(n => { const l = DATA.karmic.thieu[String(n)]; addDont(`Cảnh báo (Thiếu số ${n}): ${l.mat_toi}`, 'Karmic Lesson Blind Spot', 'Medium'); });
+  ext.charts.combined.thu_thach.forEach(a => addDont(`Cảnh báo (${a.ten}): ${firstSentence(a.noi_dung)}`, 'Empty Arrow', 'Low'));
+  return { dos, donts, base_note: MASTER_BASE[res.idx.life.value] ? `Số Đường Đời ${res.idx.life.value} dùng checklist của năng lượng nền ${base(res.idx.life.value)}.` : '' };
+}
+
+/* ---- Lưu trạng thái tick checklist theo hồ sơ ---- */
+const CHECK_KEY = 'thanso.check.v1';
+let CHECK_MEM = {};
+function loadChecks() { try { return JSON.parse(localStorage.getItem(CHECK_KEY) || '{}') || {}; } catch (e) { return CHECK_MEM; } }
+function saveChecks(o) { CHECK_MEM = o; try { localStorage.setItem(CHECK_KEY, JSON.stringify(o)); } catch (e) {} }
+function checkProfileKey(res) { return profileKey(res.profile); }
+function checklistWithState(res) {
+  const st = (loadChecks()[checkProfileKey(res)]) || {};
+  return { dos: res.ext.checklist.dos.map(d => ({ ...d, is_completed: !!st[d.id] })), donts: res.ext.checklist.donts };
+}
+
+/* =====================================================================
+   JSON mở rộng (theo cấu trúc trong tài liệu đặc tả)
+   ===================================================================== */
+const arrowJSON = a => ({ ten: a.ten, duong: listJoin(a.so), noi_dung: a.noi_dung });
+function extJSON(res) {
+  const x = res.ext, cs = careerSummary(res), cl = checklistWithState(res);
+  const lg = x.love.primary, ls = loveSummary(res, lg);
+  const pass = x.passion;
+  return {
+    ho_so: hoSoJSON(res),
+    bieu_do: {
+      bo_cuc: DATA.charts.bo_cuc,
+      ngay_sinh: { so_lan_xuat_hien: countsObj(x.charts.birth.counts), mui_ten_suc_manh: x.charts.birth.suc_manh.map(arrowJSON), mui_ten_trong: x.charts.birth.thu_thach.map(arrowJSON) },
+      ten: { so_lan_xuat_hien: countsObj(x.charts.name.counts), mui_ten_suc_manh: x.charts.name.suc_manh.map(arrowJSON), mui_ten_trong: x.charts.name.thu_thach.map(arrowJSON) },
+    },
+    dam_me_loi_the: {
+      so_chu_dao: pass.so, tan_suat: pass.max,
+      chi_so: pass.so.map(n => ({ so: n, chu_de: DATA.passion.so[n].chu_de, dam_me: DATA.passion.so[n].dam_me, loi_the: DATA.passion.so[n].loi_the })),
+    },
+    karmic: {
+      karmic_debts: x.karmic.debts,
+      karmic_lessons: x.karmic.lessons,
+      chi_tiet_no: x.karmic.debts.map(d => ({ ...d, ...DATA.karmic.no[d.debt_code] })),
+      chi_tiet_thieu: x.karmic.lessons.map(n => ({ so: n, ...DATA.karmic.thieu[String(n)] })),
+    },
+    career: {
+      primary_career_group: cs.group,
+      top_industries: cs.industries,
+      ideal_work_environment: cs.env,
+      key_career_advice: cs.advice,
+      core_trinity: x.career.trinity.map(t => ({ chi_so: T[t.k].name, gia_tri: t.v, nhom: t.group, ...(careerEntry(t.v) ? { top_nganh: careerEntry(t.v).nganh, moi_truong: careerEntry(t.v).moi_truong } : {}) })),
+    },
+    relationship: {
+      relationship_style_group: lg,
+      core_love_language: ls.core_love_language,
+      communication_tips: ls.communication_tips,
+      conflict_resolution: ls.conflict_resolution,
+      emotional_triad: x.love.triad.map(t => ({ chi_so: T[t.k].name, gia_tri: t.v, nhom: t.group })),
+    },
+    checklist: { dos_checklist: cl.dos, donts_checklist: cl.donts },
+  };
+}
+
+/* =====================================================================
+   RENDER: các tab mở rộng
+   ===================================================================== */
+let LOVE_SEL = null;
+
+const secHead = (title, sub) => `<div class="mb-4"><h3 class="font-display text-3xl font-semibold text-slate-50">${esc(title)}</h3>${sub ? `<p class="text-sm text-slate-400 mt-1">${esc(sub)}</p>` : ''}</div>`;
+const subHead = (t, extra = '') => `<div class="group-h">${esc(t)}${extra}</div>`;
+
+function gridHTML(ch) {
+  const inStrong = new Set(ch.suc_manh.flatMap(a => a.so));
+  const inEmpty = new Set(ch.thu_thach.flatMap(a => a.so));
+  return `<div class="pgrid" role="img" aria-label="Ma trận 9 ô số Pythagoras">` +
+    DATA.charts.bo_cuc.flat().map(n => {
+      const c = ch.counts[n];
+      const cls = c ? (inStrong.has(n) ? 'on s' : 'on') : (inEmpty.has(n) ? 'e' : '');
+      return `<div class="pcell ${cls}"><i class="pl">${n}</i><span class="pv">${c ? String(n).repeat(c) : '–'}</span></div>`;
+    }).join('') + `</div>`;
+}
+function arrowListHTML(list, kind) {
+  if (!list.length) return `<p class="text-sm text-slate-500 mt-2">${kind === 's' ? 'Không có mũi tên sức mạnh nào được tạo đủ 3 số.' : 'Không có mũi tên trống nào (không có hàng/cột/đường chéo nào trống hoàn toàn).'}</p>`;
+  return `<div class="space-y-2.5 mt-3">${list.map(a => `
+    <div class="arrow ${kind}">
+      <div class="flex flex-wrap items-center gap-2"><b class="text-slate-100">${esc(a.ten)}</b><span class="arrow-no">${esc(listJoin(a.so))}</span></div>
+      <p>${esc(a.noi_dung)}</p>${a.ghi_chu ? `<p class="extra">${esc(a.ghi_chu)}</p>` : ''}
+    </div>`).join('')}</div>`;
+}
+function chartCard(title, sub, ch, tone) {
+  return `<div class="glass p-5 sm:p-6 tone-${tone} reveal">
+    <p class="eyebrow">${esc(sub)}</p>
+    <h4 class="font-display text-2xl font-semibold text-slate-50 mb-4">${esc(title)}</h4>
+    ${gridHTML(ch)}
+    <div class="mt-5"><p class="lbl !mb-0 text-emerald-300/90">Mũi tên sức mạnh · ${ch.suc_manh.length}</p>${arrowListHTML(ch.suc_manh, 's')}</div>
+    <div class="mt-5"><p class="lbl !mb-0 text-rose-300/90">Mũi tên trống · ${ch.thu_thach.length}</p>${arrowListHTML(ch.thu_thach, 'e')}</div>
+  </div>`;
+}
+function barsHTML(counts, total, opts = {}) {
+  const max = Math.max(...counts.slice(1)) || 1;
+  return `<div class="space-y-2">` + [1,2,3,4,5,6,7,8,9].map(n => {
+    const c = counts[n], pct = total ? Math.round(100 * c / total) : 0;
+    const top = opts.highlightMax && c === max && c > 0, miss = c === 0;
+    return `<div class="bar-row ${miss ? 'miss' : ''} ${top ? 'top' : ''}"><span class="bar-n">${n}</span>
+      <div class="bar" aria-hidden="true"><i style="width:${(c / max) * 100}%"></i></div>
+      <span class="bar-v">${c} lần · ${pct}%${miss ? ' · thiếu' : ''}</span></div>`;
+  }).join('') + `</div>`;
+}
+
+function renderChart(res) {
+  const x = res.ext, tg = DATA.charts.tong_quan, ps = DATA.passion;
+  const passCards = x.passion.so.map(n => { const it = ps.so[n]; return `
+    <article class="idx tone-amber reveal">
+      <div class="flex items-start gap-3">
+        <div class="idx-ico">${icon('star', 'w-5 h-5')}</div>
+        <div class="min-w-0 flex-1"><p class="eyebrow">Passion · Hidden Passion</p><h4 class="text-lg font-semibold text-slate-100 leading-tight">Số ${n}</h4></div>
+        <div class="idx-num">${n}</div>
+      </div>
+      <p class="idx-title">${esc(it.chu_de)}</p>
+      <div class="detail" style="padding-top:.2rem">
+        <h4>Chỉ số Đam Mê ${n}</h4><p>${esc(it.dam_me)}</p>
+        <h4>Chỉ số Lợi Thế ${n}</h4><p>${esc(it.loi_the)}</p>
+      </div>
+    </article>`; }).join('');
+  $('#v-chart').innerHTML = `
+    ${secHead('Biểu đồ Pythagoras · Đam mê & Lợi thế', 'Ma trận 9 ô số của ngày sinh và họ tên, các mũi tên sức mạnh/trống và chỉ số nổi bật nhất trong tên.')}
+    <details class="glass p-4 sm:p-5 mb-5 text-sm text-slate-300 leading-relaxed">
+      <summary class="cursor-pointer select-none font-semibold text-slate-100">Cách đọc biểu đồ và mũi tên</summary>
+      <div class="mt-3 space-y-2">
+        <p><b class="text-slate-100">Biểu đồ Ngày sinh:</b> ${esc(tg.ngay_sinh)}</p>
+        <p><b class="text-slate-100">Biểu đồ Tên:</b> ${esc(tg.ten)}</p>
+        <p><b class="text-slate-100">Mũi tên:</b> ${esc(tg.mui_ten)}</p>
+        <p class="extra">Số lần xuất hiện của mỗi số 1–9 được đếm từ các chữ số ngày/tháng/năm sinh (bỏ số 0) và từ giá trị từng chữ cái trong họ tên. Ô có viền xanh thuộc một mũi tên sức mạnh; ô viền đỏ nét đứt thuộc một mũi tên trống.</p>
+      </div>
+    </details>
+    <div class="grid gap-5 lg:grid-cols-2">
+      ${chartCard('Biểu đồ Ngày sinh', `${pad2(res.profile.d)}/${pad2(res.profile.m)}/${res.profile.y}`, x.charts.birth, 'emerald')}
+      ${chartCard('Biểu đồ Tên', res.profile.name, x.charts.name, 'indigo')}
+    </div>
+    ${subHead('Chỉ số Đam Mê & Lợi Thế')}
+    <details class="glass p-4 sm:p-5 mb-5 text-sm text-slate-300 leading-relaxed">
+      <summary class="cursor-pointer select-none font-semibold text-slate-100">Chỉ số Đam Mê và Chỉ số Lợi Thế là gì?</summary>
+      <div class="mt-3 space-y-2"><p><b class="text-slate-100">Chỉ số Đam Mê:</b> ${esc(ps.tong_quan.dam_me)}</p><p><b class="text-slate-100">Chỉ số Lợi Thế:</b> ${esc(ps.tong_quan.loi_the)}</p></div>
+    </details>
+    <div class="grid gap-5 lg:grid-cols-5 items-start">
+      <div class="glass p-5 sm:p-6 lg:col-span-2 reveal">
+        <p class="eyebrow text-slate-400">Tần suất các số trong họ tên</p>
+        <h4 class="font-display text-2xl font-semibold text-slate-50 mb-1">Số nổi bật: <span class="text-amber-200">${x.passion.so.join(' · ')}</span></h4>
+        <p class="text-xs text-slate-400 mb-4">Xuất hiện ${x.passion.max} lần trong ${x.passion.total} chữ cái${x.passion.so.length > 1 ? ' (đồng hạng)' : ''}.</p>
+        ${barsHTML(x.nameCounts, x.passion.total, { highlightMax: true })}
+      </div>
+      <div class="lg:col-span-3 grid gap-4 ${x.passion.so.length > 1 ? 'sm:grid-cols-2' : ''}">${passCards}</div>
+    </div>`;
+}
+
+function debtDetailCard(d) {
+  const x = DATA.karmic.no[d.debt_code];
+  return `<article class="glass p-5 tone-amber reveal" style="border-color:rgba(251,191,36,.28)">
+    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="master">Nợ ${esc(d.debt_code)}</span><span class="text-xs text-slate-400">xuất hiện ở ${esc(LOC[d.location])}</span></div>
+    <h4 class="font-display text-2xl font-semibold text-slate-50">${esc(x.chu_de)}</h4>
+    <div class="detail"><h4>Biểu hiện mặt tối</h4><p>${esc(x.mat_toi)}</p><h4>Bài học nhân quả</h4><p>${esc(x.bai_hoc)}</p><h4>Cách cân bằng &amp; chuyển hóa</h4><p>${esc(x.chuyen_hoa)}</p></div>
+  </article>`;
+}
+function renderKarmic(res) {
+  const k = res.ext.karmic, K = DATA.karmic, locs = Object.keys(LOC);
+  const rows = DEBT_CODES.map(code => `<tr><th scope="row">Nợ ${code}<small>${esc(K.no[code].chu_de)}</small></th>${locs.map(l => {
+    const hit = k.debts.some(d => d.debt_code === code && d.location === l);
+    return `<td>${hit ? '<span class="hit" title="Có xuất hiện">●</span>' : '<span class="nohit">–</span>'}</td>`;
+  }).join('')}<td>${k.debts.some(d => d.debt_code === code) ? '<span class="badge badge-synth">Có</span>' : '<span class="badge badge-doc">Không</span>'}</td></tr>`).join('');
+  const lessonCards = k.lessons.map(n => { const l = K.thieu[String(n)]; return `
+    <article class="glass p-5 reveal tone-sky"><div class="flex items-center gap-3 mb-1"><span class="combo-no" style="width:2.2rem;height:2.2rem;font-size:1rem">${n}</span><h4 class="text-lg font-semibold text-slate-100 leading-tight">Thiếu số ${n}</h4></div>
+    <p class="idx-title" style="margin-top:.4rem">${esc(l.chu_de)}</p>
+    <div class="detail" style="padding-top:.4rem"><h4>Mặt tối</h4><p>${esc(l.mat_toi)}</p><h4>Cách rèn luyện</h4><p>${esc(l.ren_luyen)}</p></div></article>`; }).join('');
+  $('#v-karmic').innerHTML = `
+    ${secHead('Nợ nhân quả & Chỉ số thiếu', 'Các bài học còn trống và mặt tối tâm lý cần rèn luyện, bổ sung.')}
+    ${subHead('Chỉ số Nợ Cần Cân Bằng', `<span class="text-slate-600 normal-case tracking-normal font-medium">· ${k.debts.length ? k.debts.length + ' vị trí phát hiện' : 'không phát hiện'}</span>`)}
+    <p class="text-sm text-slate-400 leading-relaxed mb-4">${esc(K.gioi_thieu_no)}</p>
+    <div class="glass p-4 sm:p-5 overflow-x-auto reveal"><table class="tbl"><thead><tr><th>Con số nợ</th>${locs.map(l => `<th>${esc(LOC[l])}</th>`).join('')}<th>Kết quả</th></tr></thead><tbody>${rows}</tbody></table></div>
+    ${k.debts.length ? `<div class="grid gap-4 lg:grid-cols-2 mt-4">${k.debts.map(debtDetailCard).join('')}</div>` :
+      `<div class="glass p-5 mt-4 text-sm text-emerald-100 border-emerald-300/20 reveal" style="border-color:rgba(52,211,153,.3)">Không phát hiện số nợ nhân quả 13/4, 14/5, 16/7, 19/1 trong Ngày sinh, Đường Đời, Sứ Mệnh, Linh Hồn và Nhân Cách của hồ sơ này.</div>`}
+    <details class="glass p-4 sm:p-5 mt-4 text-sm text-slate-300">
+      <summary class="cursor-pointer select-none font-semibold text-slate-100">Xem ý nghĩa cả 4 con số nợ</summary>
+      <div class="mt-3 grid gap-4 md:grid-cols-2">${DEBT_CODES.map(c => `<div><p class="font-semibold text-amber-200">Nợ ${c} · ${esc(K.no[c].chu_de)}</p><p class="mt-1 text-slate-400">${esc(K.no[c].mat_toi)}</p></div>`).join('')}</div>
+    </details>
+    ${subHead('Chỉ số Thiếu (Karmic Lesson)', `<span class="text-slate-600 normal-case tracking-normal font-medium">· ${k.lessons.length ? 'thiếu số ' + k.lessons.join(', ') : 'đủ 1–9'}</span>`)}
+    <p class="text-sm text-slate-400 leading-relaxed mb-4">${esc(K.gioi_thieu_thieu)}</p>
+    <div class="grid gap-5 lg:grid-cols-5 items-start">
+      <div class="glass p-5 sm:p-6 lg:col-span-2 reveal"><p class="eyebrow text-slate-400 mb-3">Mức hiện diện của từng số trong họ tên</p>${barsHTML(res.ext.nameCounts, res.ext.passion.total)}</div>
+      <div class="lg:col-span-3">${k.lessons.length ? `<div class="grid gap-4 md:grid-cols-2">${lessonCards}</div>` : '<div class="glass p-5 text-sm text-emerald-100 reveal" style="border-color:rgba(52,211,153,.3)">Họ tên có đủ các số từ 1 đến 9 nên không có chỉ số thiếu.</div>'}</div>
+    </div>`;
+}
+
+function trinityCard(t, role, groupsData, tone, entryFn) {
+  const gk = t.group, g = groupsData[gk];
+  return `<article class="idx tone-${GROUP_TONE[gk] || tone} reveal">
+    <div class="flex items-start gap-3"><div class="min-w-0 flex-1"><p class="eyebrow">${esc(role.eyebrow)}</p><h4 class="text-lg font-semibold text-slate-100 leading-tight">${esc(t.label)}</h4></div><div class="idx-num" style="font-size:3rem">${t.v}</div></div>
+    <p class="idx-title">${esc(g.ten)}</p>
+    <p class="idx-teaser" style="-webkit-line-clamp:unset;display:block">${esc(role.text)}</p>
+    ${entryFn ? entryFn(t) : ''}
+  </article>`;
+}
+function renderCareer(res) {
+  const C = DATA.career, e = res.ext.career, cs = careerSummary(res), adv = careerAdvice(e.primary);
+  const g = C.nhom[e.primary], votes = e.votes[e.primary];
+  const cards = e.trinity.map(t => trinityCard(t, { eyebrow: { life:'Core · Long-term', expr:'Core · Skills', mat:'Core · Peak' }[t.k], text: C.vai_tro[t.k] }, C.nhom, 'emerald', t => {
+    const en = careerEntry(t.v);
+    if (!en) return '';
+    return `<div class="detail"><h4>Năng lượng số ${esc(en.nhan.replace(/^Số /, '').replace(/^Bậc Thầy /, ''))} · ${esc(en.chu_de)}</h4>
+      <p class="fl" style="margin-top:0">Top nhóm ngành phù hợp</p><div class="flex flex-wrap gap-1.5 mt-1.5">${en.nganh.map(n => `<span class="tag">${esc(n)}</span>`).join('')}</div>
+      <p class="fl">Môi trường làm việc tối ưu</p><p>${esc(en.moi_truong)}</p></div>`;
+  })).join('');
+  $('#v-career').innerHTML = `
+    ${secHead('Định hướng Sự nghiệp & Nghề nghiệp', 'Phối hợp 3 chỉ số cốt lõi: Đường Đời, Sứ Mệnh và Trưởng Thành.')}
+    <div class="glass p-5 sm:p-7 tone-${GROUP_TONE[e.primary]} reveal" style="border-color:rgb(var(--c)/.35)">
+      <p class="eyebrow">Nhóm năng lượng nghề nghiệp chính</p>
+      <h4 class="font-display text-3xl sm:text-4xl font-semibold text-slate-50 mt-1">${esc(g.ten)}</h4>
+      <p class="text-sm text-slate-400 mt-1">${votes}/3 chỉ số cốt lõi thuộc nhóm này (số ${g.so.join(', ')})${votes === 1 ? ' — các nhóm hòa phiếu nên ưu tiên theo thứ tự Đường Đời → Sứ Mệnh → Trưởng Thành' : ''}.</p>
+      <div class="grid gap-5 md:grid-cols-2 mt-5">
+        <div><p class="lbl">Top ngành gợi ý</p><div class="flex flex-wrap gap-1.5">${cs.industries.map(n => `<span class="tag">${esc(n)}</span>`).join('')}</div></div>
+        <div><p class="lbl">Môi trường lý tưởng</p><ul class="plain-list">${cs.env.map(n => `<li>${esc(n)}</li>`).join('')}</ul></div>
+      </div>
+      <div class="mt-5 rounded-xl p-4 bg-white/5 border border-white/10"><p class="lbl !mb-1">Lời khuyên chính${adv.source === 'extra' ? ' <span class="text-slate-500 normal-case tracking-normal">(bổ sung)</span>' : ''}</p><p class="text-slate-200 leading-relaxed">${esc(cs.advice)}</p></div>
+    </div>
+    <div class="grid gap-4 md:grid-cols-3 mt-5 items-start">${cards}</div>`;
+}
+
+function loveGuideHTML(gk) {
+  const g = DATA.love.nhom[gk], ex = g.vi_du;
+  return `<div class="grid gap-4 md:grid-cols-2">
+    <div class="glass p-5 tone-${GROUP_TONE[gk]}"><p class="eyebrow">Phong cách yêu &amp; khao khát</p><p class="mt-2 text-slate-200 leading-relaxed">${esc(g.phong_cach)}</p>${ex ? `<p class="extra" style="font-size:.82rem;color:#94a3b8"><b class="text-slate-300">Ngôn ngữ tình yêu cốt lõi:</b> ${esc(ex.core_love_language)}</p>` : ''}</div>
+    <div class="glass p-5 tone-${GROUP_TONE[gk]}"><p class="eyebrow">Cách giao tiếp &amp; thấu hiểu</p><ul class="plain-list mt-2">${(ex ? ex.communication_tips : g.giao_tiep).map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>
+    <div class="glass p-5" style="border-color:rgba(251,113,133,.3)"><p class="eyebrow" style="color:#fda4af">Tránh khi xung đột</p><p class="mt-2 text-slate-200 leading-relaxed">${esc(g.tranh)}</p></div>
+    <div class="glass p-5" style="border-color:rgba(52,211,153,.3)"><p class="eyebrow" style="color:#6ee7b7">Nên làm để hàn gắn</p><p class="mt-2 text-slate-200 leading-relaxed">${esc(g.nen)}</p>
+      ${ex ? `<ol class="steps mt-3">${ex.actionable_steps.map(s => `<li>${esc(s.replace(/^Bước \d:\s*/, ''))}</li>`).join('')}</ol>` : ''}</div>
+  </div>`;
+}
+function renderLove(res) {
+  const L = DATA.love, e = res.ext.love;
+  if (!LOVE_SEL || !L.nhom[LOVE_SEL] || !e.triad.some(t => t.group === LOVE_SEL)) LOVE_SEL = e.primary;
+  const present = [...new Set(e.triad.map(t => t.group))];
+  const cards = e.triad.map(t => trinityCard(t, { eyebrow: { soul:'Emotional · Desire', att:'Emotional · Reaction', pers:'Emotional · Shell' }[t.k], text: L.vai_tro[t.k] }, L.nhom, 'teal')).join('');
+  const g = L.nhom[e.primary];
+  $('#v-love').innerHTML = `
+    ${secHead('Định hướng Mối quan hệ & Tình cảm', 'Phối hợp 3 chỉ số: Linh Hồn, Thái Độ và Nhân Cách để hiểu cách yêu, giao tiếp và hàn gắn xung đột.')}
+    <div class="glass p-5 sm:p-7 tone-${GROUP_TONE[e.primary]} reveal" style="border-color:rgb(var(--c)/.35)">
+      <p class="eyebrow">Nhóm phong cách tình yêu chính</p>
+      <h4 class="font-display text-3xl sm:text-4xl font-semibold text-slate-50 mt-1">${esc(g.ten)}</h4>
+      <p class="text-sm text-slate-400 mt-1">${e.votes[e.primary]}/3 chỉ số thuộc nhóm này (số ${g.so.join(', ')})${e.votes[e.primary] === 1 ? ' — các nhóm hòa phiếu nên ưu tiên theo thứ tự Linh Hồn → Thái Độ → Nhân Cách' : ''}.</p>
+    </div>
+    <div class="grid gap-4 md:grid-cols-3 mt-5 items-start">${cards}</div>
+    <div class="mt-8 flex flex-wrap items-center justify-between gap-3">
+      <h4 class="font-display text-2xl font-semibold text-slate-50">Gợi ý chi tiết · <span id="loveGroupName">${esc(L.nhom[LOVE_SEL].ten)}</span></h4>
+      ${present.length > 1 ? `<div class="seg" role="group" aria-label="Chọn nhóm phong cách">${present.map(k => `<button type="button" data-love="${k}" aria-pressed="${k === LOVE_SEL}">${esc(L.nhom[k].ten)}</button>`).join('')}</div>` : ''}
+    </div>
+    <div id="loveGuide" class="mt-4">${loveGuideHTML(LOVE_SEL)}</div>`;
+}
+
+function checklistProgressHTML(cl) {
+  const done = cl.dos.filter(d => d.is_completed).length, total = cl.dos.length, pct = total ? Math.round(100 * done / total) : 0;
+  return `<div class="flex items-center justify-between gap-3 text-sm"><span class="text-slate-300"><b class="text-emerald-200">${done}/${total}</b> việc nên làm đã hoàn thành</span><span class="text-slate-400">${pct}%</span></div>
+    <div class="bar mt-2" style="height:.6rem"><i style="width:${pct}%;animation:none;transition:width .4s"></i></div>`;
+}
+function renderChecklist(res) {
+  const cl = checklistWithState(res), x = res.ext.checklist;
+  $('#v-check').innerHTML = `
+    ${secHead('Checklist hành động', 'Điểm mạnh cần phát huy và điểm mù cần khắc phục, tạo từ Đường Đời, nợ nhân quả, chỉ số thiếu và mũi tên.')}
+    <div class="glass p-5 reveal" style="margin-bottom:1.25rem"><div id="chkProgress">${checklistProgressHTML(cl)}</div>
+      <div class="mt-3 flex flex-wrap items-center justify-between gap-2"><p class="text-xs text-slate-500">${esc(x.base_note || 'Tiến độ được lưu trên trình duyệt theo từng hồ sơ.')}</p><button id="btnCheckReset" type="button" class="btn btn-sm">Đặt lại tiến độ</button></div></div>
+    <div class="grid gap-5 lg:grid-cols-2 items-start">
+      <section class="glass p-5 sm:p-6 reveal" style="border-color:rgba(52,211,153,.25)"><h4 class="font-display text-2xl font-semibold text-emerald-100 mb-3">Điểm mạnh cần phát huy <span class="text-sm font-sans font-medium text-slate-500">· Dos</span></h4>
+        <ul id="chkDos" class="space-y-2">${cl.dos.map(d => `<li><label class="chk ${d.is_completed ? 'done' : ''}"><input type="checkbox" data-chk="${d.id}" ${d.is_completed ? 'checked' : ''}><span class="chk-box" aria-hidden="true"></span><span class="chk-t">${esc(d.action)}<i class="cat">${esc(d.category)}</i></span></label></li>`).join('')}</ul></section>
+      <section class="glass p-5 sm:p-6 reveal" style="border-color:rgba(251,146,60,.28)"><h4 class="font-display text-2xl font-semibold text-orange-100 mb-3">Điểm mù cần khắc phục <span class="text-sm font-sans font-medium text-slate-500">· Don'ts</span></h4>
+        <ul class="space-y-2">${cl.donts.map(d => `<li class="dont sev-${d.severity}"><span class="sev">${esc(SEV_VI[d.severity] || d.severity)}</span><p>${esc(d.action)}<i class="cat">${esc(d.category)}</i></p></li>`).join('')}</ul></section>
+    </div>`;
+}
+
+function renderExt(res) { renderChart(res); renderKarmic(res); renderCareer(res); renderLove(res); renderChecklist(res); }
+
+/* ---- Nội dung cho bản PDF ---- */
+function printExtHTML(res) {
+  const x = res.ext, K = DATA.karmic, cs = careerSummary(res), cl = checklistWithState(res);
+  const pgrid = (ch, title) => `<div class="p-chart"><b>${esc(title)}</b><div class="p-grid">${DATA.charts.bo_cuc.flat().map(n => `<span class="${ch.counts[n] ? 'on' : ''}">${ch.counts[n] ? String(n).repeat(ch.counts[n]) : '–'}</span>`).join('')}</div>
+    <div class="p-arrows"><b>Mũi tên sức mạnh:</b> ${ch.suc_manh.length ? ch.suc_manh.map(a => `${esc(a.ten)} (${listJoin(a.so)})`).join('; ') : 'không có'}<br><b>Mũi tên trống:</b> ${ch.thu_thach.length ? ch.thu_thach.map(a => `${esc(a.ten)} (${listJoin(a.so)})`).join('; ') : 'không có'}</div></div>`;
+  const arrowText = ch => [...ch.suc_manh, ...ch.thu_thach].map(a => `<p><b>${esc(a.ten)} (${listJoin(a.so)}):</b> ${esc(a.noi_dung)}</p>`).join('');
+  const pass = x.passion.so.map(n => { const it = DATA.passion.so[n]; return `<div class="p-combo"><b>Số ${n} · ${esc(it.chu_de)}</b><br><b>Đam Mê:</b> ${esc(it.dam_me)}<br><b>Lợi Thế:</b> ${esc(it.loi_the)}</div>`; }).join('');
+  const debts = x.karmic.debts.length ? x.karmic.debts.map(d => { const k = K.no[d.debt_code]; return `<div class="p-combo"><b>Nợ ${d.debt_code} · ${esc(k.chu_de)}</b> (${esc(LOC[d.location])})<br>${esc(k.mat_toi)}<br><b>Bài học:</b> ${esc(k.bai_hoc)}<br><b>Chuyển hóa:</b> ${esc(k.chuyen_hoa)}</div>`; }).join('') : '<p>Không phát hiện số nợ nhân quả 13/4, 14/5, 16/7, 19/1.</p>';
+  const lessons = x.karmic.lessons.length ? x.karmic.lessons.map(n => { const l = K.thieu[String(n)]; return `<div class="p-combo"><b>Thiếu số ${n} · ${esc(l.chu_de)}</b><br>${esc(l.mat_toi)}<br><b>Rèn luyện:</b> ${esc(l.ren_luyen)}</div>`; }).join('') : '<p>Họ tên có đủ các số từ 1 đến 9.</p>';
+  const careerCards = x.career.trinity.map(t => { const en = careerEntry(t.v); return `<div class="p-combo"><b>${esc(t.label)} ${t.v} · ${esc(DATA.career.nhom[t.group].ten)}</b>${en ? `<br><b>Ngành phù hợp:</b> ${esc(en.nganh.join(', '))}<br><b>Môi trường:</b> ${esc(en.moi_truong)}` : ''}</div>`; }).join('');
+  const lg = x.love.primary, lgd = DATA.love.nhom[lg], lsum = loveSummary(res, lg);
+  const loveCards = x.love.triad.map(t => `${esc(t.label)} ${t.v} (${esc(DATA.love.nhom[t.group].ten)})`).join(' · ');
+  return `
+  <h2>Biểu đồ Pythagoras</h2>${pgrid(x.charts.birth, 'Biểu đồ Ngày sinh')}${pgrid(x.charts.name, 'Biểu đồ Tên')}
+  ${arrowText(x.charts.birth) || arrowText(x.charts.name) ? `<h2>Diễn giải mũi tên</h2><p><i>Ngày sinh</i></p>${arrowText(x.charts.birth) || '<p>Không có.</p>'}<p><i>Họ tên</i></p>${arrowText(x.charts.name) || '<p>Không có.</p>'}` : ''}
+  <h2>Đam Mê &amp; Lợi Thế (số nổi bật: ${x.passion.so.join(', ')})</h2>${pass}
+  <h2>Nợ nhân quả</h2>${debts}
+  <h2>Chỉ số thiếu</h2>${lessons}
+  <h2>Định hướng Sự nghiệp — ${esc(DATA.career.nhom[cs.group].ten)}</h2>
+  <p><b>Top ngành:</b> ${esc(cs.industries.join(', '))}<br><b>Môi trường:</b> ${esc(cs.env.join('; '))}<br><b>Lời khuyên:</b> ${esc(cs.advice)}</p>${careerCards}
+  <h2>Định hướng Tình cảm — ${esc(lgd.ten)}</h2>
+  <p>${loveCards}</p><p><b>Phong cách yêu:</b> ${esc(lgd.phong_cach)}</p><p><b>Giao tiếp:</b> ${esc(lsum.communication_tips.join(' '))}</p><p><b>Tránh:</b> ${esc(lgd.tranh)}</p><p><b>Nên:</b> ${esc(lgd.nen)}</p>
+  <h2>Checklist hành động</h2>
+  <p><b>Nên làm</b></p><ul class="p-check">${cl.dos.map(d => `<li>${d.is_completed ? '☑' : '☐'} ${esc(d.action)}</li>`).join('')}</ul>
+  <p><b>Cần tránh</b></p><ul class="p-check">${cl.donts.map(d => `<li>⚠ [${esc(SEV_VI[d.severity])}] ${esc(d.action)}</li>`).join('')}</ul>
+  <div class="p-foot">Thần số học là bộ môn mang tính tham khảo và tự khám phá, không thay thế tư vấn chuyên môn về tâm lý, tài chính, sức khỏe hay pháp lý.</div>`;
+}
+
+/* =====================================================================
+   RENDER
+   ===================================================================== */
+let CUR = null;         // kết quả hiện tại
+let VIEW = 'step1';     // step1 | step2 | json
+let JSON_VIEW = 'full'; // step1 | step2 | ext | full
+
+function fieldsHTML(entry) {
+  if (!entry) return '<p>Chưa có diễn giải cho số này.</p>';
+  let out = '', sub = false;
+  entry.fields.forEach(f => {
+    const labelOnly = !f.text && !(f.items && f.items.length);
+    const isSub = /^(Hợp|Xung đột)\b/.test(f.label);
+    if (labelOnly) { out += `<div class="fl">${esc(f.label)}</div>`; return; }
+    const open = isSub ? '<div class="sub">' : '', close = isSub ? '</div>' : '';
+    out += `${open}${f.label ? `<div class="fl">${esc(f.label)}</div>` : ''}${f.text ? `<p>${esc(f.text)}</p>` : ''}`;
+    if (f.items && f.items.length) out += `<ul>${f.items.map(i => `<li>${esc(i)}</li>`).join('')}</ul>`;
+    out += close;
+  });
+  return out;
+}
+function firstText(entry) {
+  if (!entry) return '';
+  const f = entry.fields.find(x => x.text) || entry.fields.find(x => x.items && x.items.length);
+  return f ? (f.text || f.items.join(' ')) : '';
+}
+
+function idxCard(t, r, i) {
+  const e = numEntry(t.k, r.value), def = DATA.defs[t.k];
+  const master = [11, 22, 33].includes(r.value);
+  const id = `det-${t.k}`;
+  return `
+  <article class="idx reveal tone-${t.tone}" style="--i:${i}">
+    <div class="flex items-start gap-3">
+      <div class="idx-ico">${icon(t.icon, 'w-5 h-5')}</div>
+      <div class="min-w-0 flex-1">
+        <p class="eyebrow">${esc(t.en)}</p>
+        <h3 class="text-lg font-semibold text-slate-100 leading-tight">${esc(t.name)}</h3>
+      </div>
+      <div class="text-right"><div class="idx-num">${r.value}</div>${master ? '<span class="master mt-1">Bậc thầy</span>' : ''}</div>
+    </div>
+    <p class="idx-title">${esc(e ? sentence(e.title) : '')}</p>
+    <p class="idx-formula">${esc(r.formula)}</p>
+    <p class="idx-teaser">${esc(firstText(e))}</p>
+    <div class="collapse" id="${id}"><div class="inner"><div class="detail">
+      <h4>Diễn giải cho số ${r.value}</h4>
+      ${fieldsHTML(e)}
+      ${def ? `<hr><h4>${esc(t.name)} là gì?</h4><p>${esc(def.dinh_nghia)}</p>
+        <h4>Ý nghĩa</h4><ul>${def.y_nghia.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
+        <h4>Công dụng</h4><ul>${def.cong_dung.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
+    </div></div></div>
+    <button type="button" class="idx-more" aria-expanded="false" aria-controls="${id}" data-toggle>
+      <span data-lbl>Xem chi tiết</span>${icon('chev', 'chev')}
+    </button>
+  </article>`;
+}
+
+function yearCard(kind, r, i) {
+  const isW = kind === 'world';
+  const tx = YEAR_TEXT[kind][r.value];
+  const id = `det-y-${kind}`;
+  return `
+  <article class="idx reveal tone-amber" style="--i:${i}">
+    <div class="flex items-start gap-3">
+      <div class="idx-ico">${icon(isW ? 'globe' : 'cycle', 'w-5 h-5')}</div>
+      <div class="min-w-0 flex-1">
+        <p class="eyebrow">${isW ? 'Universal Year' : 'Personal Year'} · ${CUR.profile.lookupYear}</p>
+        <h3 class="text-lg font-semibold text-slate-100 leading-tight">${isW ? 'Năm Thế Giới' : 'Năm Cá Nhân'}</h3>
+      </div>
+      <div class="text-right"><div class="idx-num">${r.value}</div></div>
+    </div>
+    <p class="idx-title">${esc(tx.t)}</p>
+    <p class="idx-formula">${esc(r.formula)}</p>
+    <p class="idx-teaser">${esc(tx.s)}</p>
+    <div class="collapse" id="${id}"><div class="inner"><div class="detail">
+      <h4>Diễn giải cho số ${r.value}</h4>
+      <p>${esc(tx.s)}</p>
+      <h4>Gợi ý</h4><ul>${tx.tips.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
+      <p class="extra">${isW ? 'Năm Thế Giới: năng lượng chung của năm, giống nhau với mọi người.' : 'Năm Cá Nhân: ngày + tháng sinh + năm tra cứu; thay đổi theo chu kỳ 9 năm.'} Phần diễn giải này là nội dung bổ sung, không nằm trong file định nghĩa.</p>
+    </div></div></div>
+    <button type="button" class="idx-more" aria-expanded="false" aria-controls="${id}" data-toggle>
+      <span data-lbl>Xem chi tiết</span>${icon('chev', 'chev')}
+    </button>
+  </article>`;
+}
+
+function comboHTML(c, i) {
+  const A = T[c.a.k], B = T[c.b.k];
+  return `
+  <article class="combo reveal" style="--i:${i % 8}">
+    <div class="flex flex-wrap items-center gap-2">
+      <span class="combo-no">${c.no}</span>
+      <span class="chip tone-${A.tone}">${esc(A.short)} <b>${c.a.v}</b></span>
+      <span class="text-slate-500">+</span>
+      <span class="chip tone-${B.tone}">${esc(B.short)} <b>${c.b.v}</b></span>
+    </div>
+    <p class="combo-text">${esc(c.text)}</p>
+    ${c.note ? `<p class="combo-note">${esc(c.note)}</p>` : ''}
+  </article>`;
+}
+
+function renderResults(res) {
+  CUR = res;
+  const p = res.profile, dob = `${pad2(p.d)}/${pad2(p.m)}/${p.y}`;
+  $('#rName').textContent = p.name;
+  $('#rDob').textContent = dob;
+  $('#rYear').textContent = p.lookupYear;
+  $('#rLife').textContent = res.idx.life.value;
+
+  // Step 1
+  let n = 0;
+  $('#cards1').innerHTML = TYPES.map(t => idxCard(t, res.idx[t.k], n++)).join('') +
+    yearCard('world', res.years.world, n++) + yearCard('personal', res.years.personal, n++);
+
+  // Step 2
+  const groups = [['life','Đường đời'],['expr','Sứ mệnh'],['soul','Linh hồn'],['pers','Nhân cách'],['bday','Ngày sinh'],['att','Thái độ']];
+  let html = '';
+  groups.forEach(([k, label]) => {
+    const list = res.combos.filter(c => c.a.k === k);
+    if (!list.length) return;
+    html += `<div class="group-h">${esc(label)} <span class="text-slate-600 normal-case tracking-normal font-medium">· ${list.length} kết hợp</span></div><div class="grid gap-3 lg:grid-cols-2">${list.map(comboHTML).join('')}</div>`;
+  });
+  $('#cards2').innerHTML = html;
+
+  renderExt(res);
+
+  renderJSON();
+  $('#printArea').innerHTML = printHTML(res);
+
+  $('#results').hidden = false;
+  setView('step1', false);
+}
+
+function setView(v, scroll = true) {
+  VIEW = v;
+  $$('.tab').forEach(b => b.setAttribute('aria-selected', String(b.dataset.view === v)));
+  ['step1','step2','chart','karmic','career','love','check','json'].forEach(id => { $('#v-' + id).hidden = id !== v; });
+  const active = $('.tab[aria-selected="true"]');
+  if (active && active.scrollIntoView) active.scrollIntoView({ inline: 'center', block: 'nearest' });
+  if (scroll) $('#tabsBar').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ---- JSON ---- */
+function currentJSONObject() {
+  if (!CUR) return {};
+  return JSON_VIEW === 'step1' ? step1JSON(CUR) : JSON_VIEW === 'step2' ? step2JSON(CUR) : JSON_VIEW === 'ext' ? extJSON(CUR) : fullJSON(CUR);
+}
+function highlightJSON(json) {
+  const re = /("(?:\\.|[^"\\])*")(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?/g;
+  let out = '', last = 0, m;
+  while ((m = re.exec(json))) {
+    out += esc(json.slice(last, m.index));
+    if (m[1]) out += m[2] ? `<span class="jk">${esc(m[1])}</span>${esc(m[2])}` : `<span class="js">${esc(m[1])}</span>`;
+    else if (m[3]) out += `<span class="jb">${m[3]}</span>`;
+    else out += `<span class="jn">${m[0]}</span>`;
+    last = re.lastIndex;
+  }
+  return out + esc(json.slice(last));
+}
+function renderJSON() {
+  const text = JSON.stringify(currentJSONObject(), null, 2);
+  $('#jsonView').innerHTML = highlightJSON(text);
+  $('#jsonMeta').textContent = `${(new Blob([text]).size / 1024).toFixed(1)} KB`;
+  $$('.seg [data-json]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.json === JSON_VIEW)));
+}
+
+function slug() {
+  const s = stripVN(CUR.profile.name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  return `thanso_${s || 'ho-so'}_${pad2(CUR.profile.d)}${pad2(CUR.profile.m)}${CUR.profile.y}`;
+}
+function download(filename, text, mime = 'application/json') {
+  const blob = new Blob([text], { type: mime + ';charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+/* ---- PDF (in trang) ---- */
+function printHTML(res) {
+  const p = res.profile, dob = `${pad2(p.d)}/${pad2(p.m)}/${p.y}`;
+  const now = new Date().toLocaleDateString('vi-VN');
+  const sumRows = TYPES.map(t => `<tr><td class="n">${res.idx[t.k].value}</td><td><b>${esc(t.name)}</b><br><span style="color:#64748b;font-size:8.5pt">${esc(t.en)}</span></td><td>${esc(tagline(t.k, res.idx[t.k].value))}</td></tr>`).join('') +
+    `<tr><td class="n">${res.years.world.value}</td><td><b>Năm Thế Giới ${p.lookupYear}</b></td><td>${esc(YEAR_TEXT.world[res.years.world.value].t)}</td></tr>` +
+    `<tr><td class="n">${res.years.personal.value}</td><td><b>Năm Cá Nhân ${p.lookupYear}</b></td><td>${esc(YEAR_TEXT.personal[res.years.personal.value].t)}</td></tr>`;
+
+  const letters = res.name.words.map(w => `<div class="p-letters"><b>${esc(w.raw)}:</b> ` + w.letters.map(l => `<span class="${l.vowel ? 'v' : ''}">${l.ch}${l.v}</span>`).join('') + `</div>`).join('');
+
+  const idxBlocks = TYPES.map(t => {
+    const r = res.idx[t.k], e = numEntry(t.k, r.value), def = DATA.defs[t.k];
+    const flds = e ? e.fields.map(f => {
+      const items = f.items && f.items.length ? `<ul>${f.items.map(i => `<li>${esc(i)}</li>`).join('')}</ul>` : '';
+      return `<p>${f.label ? `<b>${esc(f.label)}${f.text ? ':' : ''}</b> ` : ''}${esc(f.text)}</p>${items}`;
+    }).join('') : '';
+    return `<div class="p-idx"><div class="big">${r.value}${[11,22,33].includes(r.value) ? '<small>Bậc thầy</small>' : ''}</div><div>
+      <h3>${esc(t.name)}<span class="en">${esc(t.en)}</span></h3>
+      <div class="fm">${esc(r.formula)}</div>
+      <div class="tt">${esc(e ? sentence(e.title) : '')}</div>
+      ${def ? `<div class="p-def"><b>Định nghĩa:</b> ${esc(def.dinh_nghia)}</div>` : ''}
+      ${flds}</div></div>`;
+  }).join('');
+
+  const yearBlocks = ['world', 'personal'].map(k => {
+    const r = res.years[k], tx = YEAR_TEXT[k][r.value];
+    return `<div class="p-idx"><div class="big">${r.value}</div><div>
+      <h3>${k === 'world' ? 'Năm Thế Giới' : 'Năm Cá Nhân'} ${p.lookupYear}</h3><div class="fm">${esc(r.formula)}</div>
+      <div class="tt">${esc(tx.t)}</div><p>${esc(tx.s)}</p><ul>${tx.tips.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div></div>`;
+  }).join('');
+
+  const combos = res.combos.map(c => `<div class="p-combo"><b>${c.no}. ${esc(T[c.a.k].short)} ${c.a.v} + ${esc(T[c.b.k].short)} ${c.b.v}</b><br>${esc(c.text)}${c.note ? `<div class="src">${esc(c.note)}</div>` : ''}</div>`).join('');
+
+  return `
+  <div class="p-head"><h1>Hồ sơ Thần Số Học</h1><p>Báo cáo tra cứu theo hệ Pythagoras · xuất ngày ${now}</p></div>
+  <div class="p-meta">
+    <div><small>Họ và tên</small><strong>${esc(p.name)}</strong></div>
+    <div><small>Ngày sinh</small><strong>${dob}</strong></div>
+    <div><small>Năm tra cứu</small><strong>${p.lookupYear}</strong></div>
+    <div><small>Số Đường Đời</small><strong>${res.idx.life.value}</strong></div>
+  </div>
+  <h2>Tổng quan các chỉ số</h2>
+  <table class="p-sum"><thead><tr><th>Số</th><th>Chỉ số</th><th>Tinh thần chính</th></tr></thead><tbody>${sumRows}</tbody></table>
+  <h2>Bước 1 — Diễn giải từng chỉ số</h2>${idxBlocks}${yearBlocks}
+  <h2>Bước 2 — Kết hợp các chỉ số</h2>${combos}${printExtHTML(res)}`;
+}
+
+function exportPDF() {
+  if (!CUR) return;
+  const old = document.title;
+  document.title = slug();
+  const restore = () => { document.title = old; window.removeEventListener('afterprint', restore); };
+  window.addEventListener('afterprint', restore);
+  toast('Trong hộp thoại in, hãy chọn “Lưu dưới dạng PDF”.');
+  setTimeout(() => window.print(), 350);
+}
+
+/* =====================================================================
+   HỒ SƠ ĐÃ LƯU (localStorage)
+   ===================================================================== */
+const STORE_KEY = 'thanso.profiles.v1';
+const LAST_KEY = 'thanso.last.v1';
+let MEM = [];            // dự phòng khi trình duyệt chặn localStorage
+let storageOK = true;
+
+function loadProfiles() {
+  try { const raw = localStorage.getItem(STORE_KEY); const arr = raw ? JSON.parse(raw) : []; return Array.isArray(arr) ? arr : []; }
+  catch (e) { storageOK = false; return MEM; }
+}
+function saveProfiles(list) {
+  MEM = list;
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(list)); }
+  catch (e) { storageOK = false; }
+}
+function profileKey(p) { return `${stripVN(p.name).toLowerCase().replace(/\s+/g, ' ').trim()}|${p.d}-${p.m}-${p.y}`; }
+
+function saveCurrent() {
+  if (!CUR) return;
+  const p = CUR.profile;
+  const list = loadProfiles();
+  const rec = { id: 'p' + Date.now().toString(36), name: p.name, d: p.d, m: p.m, y: p.y, yVowel: !!p.yVowel, life: CUR.idx.life.value, savedAt: new Date().toISOString() };
+  const i = list.findIndex(x => profileKey(x) === profileKey(rec));
+  if (i >= 0) { rec.id = list[i].id; list[i] = rec; } else list.unshift(rec);
+  saveProfiles(list);
+  renderProfiles();
+  toast(i >= 0 ? 'Đã cập nhật hồ sơ đã lưu' : 'Đã lưu hồ sơ');
+  if (!storageOK) toast('Trình duyệt đang chặn lưu trữ: hồ sơ chỉ giữ tạm trong phiên này.', true);
+}
+
+function renderProfiles() {
+  const list = loadProfiles();
+  $('#profCount').textContent = list.length;
+  const q = stripVN($('#profSearch').value || '').toLowerCase().trim();
+  const shown = q ? list.filter(p => stripVN(p.name).toLowerCase().includes(q)) : list;
+  const box = $('#profList');
+  if (!list.length) {
+    box.innerHTML = `<div class="text-center py-12 text-slate-400 text-sm"><div class="mx-auto mb-3 w-12 h-12 grid place-items-center rounded-2xl bg-white/5 border border-white/10 text-emerald-300">${icon('folder', 'w-6 h-6')}</div>Chưa có hồ sơ nào.<br>Hãy tra cứu rồi bấm “Lưu hồ sơ”.</div>`;
+    return;
+  }
+  if (!shown.length) { box.innerHTML = '<p class="text-center py-10 text-sm text-slate-400">Không tìm thấy hồ sơ phù hợp.</p>'; return; }
+  box.innerHTML = shown.map(p => `
+    <div class="prof flex items-center gap-3 mb-2.5" data-id="${esc(p.id)}">
+      <div class="prof-num">${p.life}</div>
+      <div class="min-w-0 flex-1">
+        <p class="font-medium text-slate-100 truncate">${esc(p.name)}</p>
+        <p class="text-xs text-slate-400">${pad2(p.d)}/${pad2(p.m)}/${p.y} · lưu ${new Date(p.savedAt).toLocaleDateString('vi-VN')}</p>
+      </div>
+      <button class="btn btn-sm" data-open="${esc(p.id)}" aria-label="Mở hồ sơ ${esc(p.name)}">Mở</button>
+      <button class="btn btn-sm btn-danger" data-del="${esc(p.id)}" aria-label="Xóa hồ sơ ${esc(p.name)}">${icon('trash')}</button>
+    </div>`).join('');
+}
+
+function openProfile(id) {
+  const p = loadProfiles().find(x => x.id === id);
+  if (!p) return;
+  $('#fName').value = p.name;
+  $('#fDob').value = `${pad2(p.d)}/${pad2(p.m)}/${p.y}`;
+  $('#fVowel').checked = p.yVowel !== false;
+  closeDrawer();
+  runLookup(true);
+}
+function deleteProfile(id) {
+  const list = loadProfiles().filter(x => x.id !== id);
+  saveProfiles(list); renderProfiles(); toast('Đã xóa hồ sơ');
+}
+
+function exportProfiles() {
+  const list = loadProfiles();
+  if (!list.length) return toast('Chưa có hồ sơ để xuất.', true);
+  download(`thanso_ho-so_${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify({ loai: 'thanso_ho_so', phien_ban: 1, ho_so: list }, null, 2));
+  toast(`Đã xuất ${list.length} hồ sơ`);
+}
+function importProfiles(file) {
+  const rd = new FileReader();
+  rd.onload = () => {
+    try {
+      const obj = JSON.parse(rd.result);
+      const arr = Array.isArray(obj) ? obj : obj.ho_so;
+      if (!Array.isArray(arr)) throw new Error('bad');
+      const list = loadProfiles();
+      let added = 0;
+      arr.forEach(r => {
+        if (!r || typeof r.name !== 'string' || !(r.d >= 1 && r.d <= 31 && r.m >= 1 && r.m <= 12 && r.y >= 1900)) return;
+        const rec = { id: 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), name: r.name.slice(0, 120), d: +r.d, m: +r.m, y: +r.y, yVowel: r.yVowel !== false, life: +r.life || 0, savedAt: r.savedAt || new Date().toISOString() };
+        const i = list.findIndex(x => profileKey(x) === profileKey(rec));
+        if (i < 0) { list.unshift(rec); added++; }
+      });
+      saveProfiles(list); renderProfiles(); toast(`Đã nhập ${added} hồ sơ mới`);
+    } catch (e) { toast('File không đúng định dạng hồ sơ.', true); }
+  };
+  rd.readAsText(file);
+}
+
+/* =====================================================================
+   UI: drawer, toast, form
+   ===================================================================== */
+let toastTimer;
+function toast(msg, err = false) {
+  const t = $('#toast');
+  t.textContent = msg; t.classList.toggle('err', err); t.classList.add('on');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('on'), 3200);
+}
+function openDrawer() { $('#drawer').classList.add('on'); $('#overlay').classList.add('on'); $('#drawer').setAttribute('aria-hidden', 'false'); setTimeout(() => $('#profSearch').focus({ preventScroll: true }), 300); }
+function closeDrawer() { $('#drawer').classList.remove('on'); $('#overlay').classList.remove('on'); $('#drawer').setAttribute('aria-hidden', 'true'); }
+
+function showError(msg) { const e = $('#formError'); e.textContent = msg; e.hidden = !msg; }
+
+function runLookup(auto = false) {
+  showError('');
+  const name = $('#fName').value.replace(/\s+/g, ' ').trim();
+  const nm = analyzeName(name, true);
+  if (!name || nm.words.length === 0) { showError('Vui lòng nhập họ và tên khai sinh.'); $('#fName').focus(); return; }
+  if (nm.words.length < 2) { showError('Hãy nhập đầy đủ họ và tên (ít nhất 2 từ) để kết quả chính xác.'); $('#fName').focus(); return; }
+  const dob = parseDOB($('#fDob').value);
+  if (dob.error) { showError(dob.error); $('#fDob').focus(); return; }
+  const ly = parseInt($('#fYear').value, 10);
+  if (!(ly >= 1900 && ly <= 2200)) { showError('Năm tra cứu không hợp lệ.'); $('#fYear').focus(); return; }
+
+  const profile = { name, d: dob.d, m: dob.m, y: dob.y, lookupYear: ly, yVowel: $('#fVowel').checked };
+  const btn = $('#btnLookup');
+  btn.disabled = true; btn.querySelector('span').textContent = 'Đang tính…';
+  setTimeout(() => {
+    try {
+      renderResults(computeAll(profile));
+      try { localStorage.setItem(LAST_KEY, JSON.stringify({ name, dob: $('#fDob').value, y: profile.yVowel })); } catch (e) {}
+      $('#results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (err) {
+      console.error(err); showError('Có lỗi khi tính toán. Vui lòng kiểm tra lại dữ liệu nhập.');
+    }
+    btn.disabled = false; btn.querySelector('span').textContent = 'Tra cứu ngay';
+  }, auto ? 0 : 280);
+}
+
+function init() {
+  $('#fYear').value = new Date().getFullYear();
+  $('#footYear').textContent = new Date().getFullYear();
+
+  // khôi phục lần nhập gần nhất
+  try {
+    const last = JSON.parse(localStorage.getItem(LAST_KEY) || 'null');
+    if (last) { $('#fName').value = last.name || ''; $('#fDob').value = last.dob || ''; $('#fVowel').checked = last.y !== false; }
+  } catch (e) {}
+
+  $('#f').addEventListener('submit', e => { e.preventDefault(); runLookup(); });
+
+  // tự thêm dấu "/" khi gõ ngày sinh
+  $('#fDob').addEventListener('input', e => {
+    const v = e.target.value;
+    if (e.inputType === 'insertText' && (/^\d{2}$/.test(v) || /^\d{2}\/\d{2}$/.test(v))) e.target.value = v + '/';
+  });
+  // chọn ngày bằng lịch
+  $('#btnCal').addEventListener('click', () => {
+    const di = $('#fDate');
+    const cur = parseDOB($('#fDob').value);
+    if (!cur.error) di.value = `${cur.y}-${pad2(cur.m)}-${pad2(cur.d)}`;
+    di.max = new Date().toISOString().slice(0, 10);
+    try { di.showPicker(); } catch (e) { di.focus(); di.click(); }
+  });
+  $('#fDate').addEventListener('change', e => {
+    const m = e.target.value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (m) $('#fDob').value = `${m[3]}/${m[2]}/${m[1]}`;
+  });
+
+  $('#btnExample').addEventListener('click', () => {
+    $('#fName').value = 'Đào Vũ Hưng'; $('#fDob').value = '16/04/1993'; $('#fVowel').checked = true;
+    runLookup();
+  });
+  $('#btnClear').addEventListener('click', () => {
+    $('#fName').value = ''; $('#fDob').value = ''; showError(''); $('#results').hidden = true; CUR = null; $('#fName').focus();
+  });
+
+  // tabs
+  $$('.tab').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
+  $('.tabs').addEventListener('keydown', e => {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    const tabs = $$('.tab'), i = tabs.findIndex(t => t.getAttribute('aria-selected') === 'true');
+    const n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+    n.focus(); n.click();
+  });
+
+  // mở/thu gọn thẻ
+  $('#results').addEventListener('click', e => {
+    const b = e.target.closest('[data-toggle]');
+    if (!b) return;
+    const card = b.closest('.idx'), open = !card.classList.contains('open');
+    card.classList.toggle('open', open);
+    b.setAttribute('aria-expanded', String(open));
+    b.querySelector('[data-lbl]').textContent = open ? 'Thu gọn' : 'Xem chi tiết';
+  });
+  $('#btnExpandAll').addEventListener('click', () => {
+    const cards = $$('#cards1 .idx'), allOpen = cards.every(c => c.classList.contains('open'));
+    cards.forEach(c => {
+      c.classList.toggle('open', !allOpen);
+      const b = c.querySelector('[data-toggle]');
+      b.setAttribute('aria-expanded', String(!allOpen));
+      b.querySelector('[data-lbl]').textContent = !allOpen ? 'Thu gọn' : 'Xem chi tiết';
+    });
+    $('#btnExpandAll').querySelector('span').textContent = allOpen ? 'Mở rộng tất cả' : 'Thu gọn tất cả';
+  });
+
+  // Tình cảm: đổi nhóm phong cách
+  $('#v-love').addEventListener('click', e => {
+    const b = e.target.closest('[data-love]');
+    if (!b) return;
+    LOVE_SEL = b.dataset.love;
+    $$('#v-love [data-love]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    $('#loveGroupName').textContent = DATA.love.nhom[LOVE_SEL].ten;
+    $('#loveGuide').innerHTML = loveGuideHTML(LOVE_SEL);
+  });
+  // Checklist: tick / đặt lại, lưu theo hồ sơ
+  $('#v-check').addEventListener('change', e => {
+    const c = e.target.closest('[data-chk]');
+    if (!c || !CUR) return;
+    const all = loadChecks(), key = checkProfileKey(CUR);
+    all[key] = all[key] || {};
+    if (c.checked) all[key][c.dataset.chk] = true; else delete all[key][c.dataset.chk];
+    saveChecks(all);
+    c.closest('.chk').classList.toggle('done', c.checked);
+    $('#chkProgress').innerHTML = checklistProgressHTML(checklistWithState(CUR));
+    $('#printArea').innerHTML = printHTML(CUR);
+    if (JSON_VIEW === 'ext' || JSON_VIEW === 'full') renderJSON();
+  });
+  $('#v-check').addEventListener('click', e => {
+    if (!e.target.closest('#btnCheckReset') || !CUR) return;
+    const all = loadChecks(); delete all[checkProfileKey(CUR)]; saveChecks(all);
+    renderChecklist(CUR); $('#printArea').innerHTML = printHTML(CUR); renderJSON(); toast('Đã đặt lại tiến độ checklist');
+  });
+
+  // JSON
+  $$('.seg [data-json]').forEach(b => b.addEventListener('click', () => { JSON_VIEW = b.dataset.json; renderJSON(); }));
+  $('#btnCopyJson').addEventListener('click', async () => {
+    const text = JSON.stringify(currentJSONObject(), null, 2);
+    try { await navigator.clipboard.writeText(text); toast('Đã sao chép JSON'); }
+    catch (e) {
+      const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); toast('Đã sao chép JSON'); } catch (_) { toast('Không thể sao chép tự động.', true); }
+      ta.remove();
+    }
+  });
+
+  $('#btnPdf').addEventListener('click', exportPDF);
+  $('#btnSave').addEventListener('click', saveCurrent);
+
+  // drawer
+  $('#btnProfiles').addEventListener('click', openDrawer);
+  $('#btnCloseDrawer').addEventListener('click', closeDrawer);
+  $('#overlay').addEventListener('click', closeDrawer);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+  $('#profSearch').addEventListener('input', renderProfiles);
+  $('#profList').addEventListener('click', e => {
+    const o = e.target.closest('[data-open]'), d = e.target.closest('[data-del]');
+    if (o) openProfile(o.dataset.open);
+    if (d) deleteProfile(d.dataset.del);
+  });
+  $('#btnExportProf').addEventListener('click', exportProfiles);
+  $('#btnImportProf').addEventListener('click', () => $('#fileImport').click());
+  $('#fileImport').addEventListener('change', e => { if (e.target.files[0]) importProfiles(e.target.files[0]); e.target.value = ''; });
+  $('#btnClearProf').addEventListener('click', () => {
+    if (!loadProfiles().length) return;
+    if (confirm('Xóa toàn bộ hồ sơ đã lưu trên trình duyệt này?')) { saveProfiles([]); renderProfiles(); toast('Đã xóa toàn bộ hồ sơ'); }
+  });
+
+  renderProfiles();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+})();
+
+</script>
+</body>
+</html>
